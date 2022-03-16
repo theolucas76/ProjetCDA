@@ -15,5 +15,10 @@ class Keys
     public const DATABASE_PASSWORD = 'password';
     public const DATABASE_ROLE = 'role';
 
+    // USER DATA
+    public const DATABASE_USER_DATA_ID = 'userData_id';
+    public const DATABASE_USER_DATA_USER_ID = 'userData_userId';
+    public const DATABASE_USER_DATA_KEY = 'userData_key';
+    public const DATABASE_USER_DATA_COLUMN = 'userData_column';
 
 }
