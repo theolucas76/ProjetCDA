@@ -129,5 +129,4 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
             Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
         );
     }
-
 }
