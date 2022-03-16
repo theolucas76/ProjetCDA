@@ -33,4 +33,14 @@ class Keys
     public const DATABASE_SITE_DATA_KEY = 'siteData_key';
     public const DATABASE_SITE_DATA_COLUMN = 'siteData_column';
 
+    // TICKET
+    public const DATABASE_TICKET_ID = 'ticket_id';
+    public const DATABASE_TICKET_SUBJECT = 'ticket_subject';
+
+    // TICKET DATA
+    public const DATABASE_TICKET_DATA_ID = 'data_id';
+    public const DATABASE_TICKET_DATA_TICKET_ID = 'data_ticket_id';
+    public const DATABASE_TICKET_DATA_KEY = 'data_key';
+    public const DATABASE_TICKET_DATA_COLUMN = 'data_column';
+
 }
