@@ -63,9 +63,9 @@ class SitesData extends Model
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getDataKey(): int {
+    public function getDataKey(): string {
         return $this->siteData_key;
     }
 

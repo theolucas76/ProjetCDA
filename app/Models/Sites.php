@@ -127,8 +127,8 @@ class Sites extends Model
             Keys::DATABASE_SITE_DATE_START => $this->getDateStart()->getTimestamp(),
             Keys::DATABASE_SITE_DATE_END => $this->getDateEnd()->getTimestamp(),
             Keys::DATABASE_CREATED_AT => $this->getCreated()->getTimestamp(),
-            Keys::DATABASE_UPDATED_AT => $this->getUpdated()->getTimestamp(),
-            Keys::DATABASE_DELETED_AT => $this->getDeleted()->getTimestamp()
+            Keys::DATABASE_UPDATED_AT => ($this->getUpdated() !== null ? $this->getUpdated()->getTimestamp() : null) ,
+            Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
         );
     }
 
