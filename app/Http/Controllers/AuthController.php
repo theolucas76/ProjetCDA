@@ -25,8 +25,8 @@ class AuthController extends Controller
         //validate incoming request
         $this->validate($request, [
             'login' => 'required|string|unique:users',
-            'password' => 'required',
-            'role' => 'required'
+            'password' => 'required|string',
+            'role' => 'required|integer'
         ]);
 
         try
