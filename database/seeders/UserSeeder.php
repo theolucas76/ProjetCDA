@@ -54,7 +54,8 @@ class UserSeeder extends Seeder
     public function generateUsers(Role $role): Users
     {
         $myUser = new Users();
-        switch ($role) {
+
+        switch ($role->__toInt()) {
             case Role::DIRECTOR:
                 $myUser->setLogin('director');
                 $myUser->setPassword(Hash::make('director'));
@@ -84,7 +85,7 @@ class UserSeeder extends Seeder
         $myUserDataName = new UserData();
         $myUserDataFirstname = new UserData();
         $myArray = array();
-        switch ($role) {
+        switch ($role->__toInt()) {
             case Role::DIRECTOR:
                 $myUserDataName->setUserId(1);
                 $myUserDataName->setUserDataKey('Nom');

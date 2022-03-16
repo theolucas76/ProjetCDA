@@ -19,9 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('login')->unique();
             $table->string('password');
             $table->integer('role');
-            $table->dateTime('created_at')->nullable();
-            $table->dateTime('updated_at')->nullable();
-            $table->dateTime('deleted_at')->nullable();
+            $table->integer('created_at')->nullable();
+            $table->integer('updated_at')->nullable();
+            $table->integer('deleted_at')->nullable();
         });
     }
 
