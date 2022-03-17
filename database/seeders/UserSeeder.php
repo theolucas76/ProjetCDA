@@ -60,16 +60,19 @@ class UserSeeder extends Seeder
                 $myUser->setLogin('director');
                 $myUser->setPassword(Hash::make('director'));
                 $myUser->setRole($role);
+                $myUser->setJob(1);
                 break;
             case Role::MANAGER:
                 $myUser->setLogin('manager');
                 $myUser->setPassword(Hash::make('manager'));
                 $myUser->setRole($role);
+                $myUser->setJob(2);
                 break;
             case Role::EMPLOYEE:
                 $myUser->setLogin('employee');
                 $myUser->setPassword(Hash::make('employee'));
                 $myUser->setRole($role);
+                $myUser->setJob(10);
                 break;
             case Role::CUSTOMER:
                 $myUser->setLogin('customer');
