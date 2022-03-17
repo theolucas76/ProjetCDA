@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
              UserSeeder::class,
              SiteSeeder::class,
              TicketSeeder::class,
-             MaterialSeeder::class
+             MaterialSeeder::class,
+             TaskSeeder::class
          ]);
     }
 }

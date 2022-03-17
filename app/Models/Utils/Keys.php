@@ -46,4 +46,13 @@ class Keys
 
     // MATERIAL DATA
     public const DATABASE_MATERIAL_DATA_MATERIAL_ID = 'data_material_id';
+
+    // TASK
+    public const DATABASE_TASK_ID = 'task_id';
+    public const DATABASE_TASK_NAME = 'task_name';
+    public const DATABASE_TASK_DATE_START = 'task_date_start';
+    public const DATABASE_TASK_DATE_END = 'task_date_end';
+
+    // TASK DATA
+    public const DATABASE_TASK_DATA_TASK_ID = 'data_task_id';
 }
