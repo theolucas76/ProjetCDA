@@ -19,6 +19,7 @@ class Keys
     public const DATABASE_LOGIN = 'login';
     public const DATABASE_PASSWORD = 'password';
     public const DATABASE_ROLE = 'role';
+    public const DATABASE_JOB = 'job';
 
     // USER DATA
     public const DATABASE_USER_DATA_USER_ID = 'data_user_id';
@@ -39,4 +40,10 @@ class Keys
     // TICKET DATA
     public const DATABASE_TICKET_DATA_TICKET_ID = 'data_ticket_id';
 
+    // MATERIAL
+    public const DATABASE_MATERIAL_ID = 'material_id';
+    public const DATABASE_MATERIAL_NAME = 'material_name';
+
+    // MATERIAL DATA
+    public const DATABASE_MATERIAL_DATA_MATERIAL_ID = 'data_material_id';
 }

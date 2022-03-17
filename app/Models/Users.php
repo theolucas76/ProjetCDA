@@ -41,6 +41,8 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 
     private Role $role;
 
+    private ?int $job;
+
     private \DateTime $created_at;
 
     private ?\DateTime $updated_at;
@@ -54,6 +56,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->setLogin('');
         $this->setPassword('');
         $this->setRole( new Role( Role::UNDEFINED ) );
+        $this->setJob(null);
         $this->setCreated(new \DateTime());
         $this->setUpdated(null);
         $this->setDeleted(null);
@@ -91,6 +94,14 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         return $this->role;
     }
 
+    public function setJob(?int $job): Users {
+        $this->job = $job;
+        return $this;
+    }
+    public function getJob(): ?int {
+        return $this->job;
+    }
+
     public function setCreated(\DateTime $created_at): Users
     {
         $this->created_at = $created_at;
@@ -124,6 +135,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
             Keys::DATABASE_LOGIN => $this->getLogin(),
             Keys::DATABASE_PASSWORD => $this->getPassword(),
             Keys::DATABASE_ROLE => $this->getRole()->__toInt(),
+            Keys::DATABASE_JOB => $this->getJob(),
             Keys::DATABASE_CREATED_AT => $this->getCreated()->getTimestamp(),
             Keys::DATABASE_UPDATED_AT => ($this->getUpdated() !== null ? $this->getUpdated()->getTimestamp() : null),
             Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
