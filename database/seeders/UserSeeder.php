@@ -88,38 +88,38 @@ class UserSeeder extends Seeder
         switch ($role->__toInt()) {
             case Role::DIRECTOR:
                 $myUserDataName->setUserId(1);
-                $myUserDataName->setUserDataKey('Nom');
-                $myUserDataName->setUserDataColumn('Director');
+                $myUserDataName->setDataKey('Nom');
+                $myUserDataName->setDataColumn('Director');
                 $myUserDataFirstname->setUserId(1);
-                $myUserDataFirstname->setUserDataKey('Prénom');
-                $myUserDataFirstname->setUserDataColumn('Super');
+                $myUserDataFirstname->setDataKey('Prénom');
+                $myUserDataFirstname->setDataColumn('Super');
                 $myArray = [$myUserDataName, $myUserDataFirstname];
                 break;
             case Role::MANAGER:
                 $myUserDataName->setUserId(2);
-                $myUserDataName->setUserDataKey('Nom');
-                $myUserDataName->setUserDataColumn('Manager');
+                $myUserDataName->setDataKey('Nom');
+                $myUserDataName->setDataColumn('Manager');
                 $myUserDataFirstname->setUserId(2);
-                $myUserDataFirstname->setUserDataKey('Prénom');
-                $myUserDataFirstname->setUserDataColumn('Admin');
+                $myUserDataFirstname->setDataKey('Prénom');
+                $myUserDataFirstname->setDataColumn('Admin');
                 $myArray = [$myUserDataName, $myUserDataFirstname];
                 break;
             case Role::EMPLOYEE:
                 $myUserDataName->setUserId(3);
-                $myUserDataName->setUserDataKey('Nom');
-                $myUserDataName->setUserDataColumn('Employee');
+                $myUserDataName->setDataKey('Nom');
+                $myUserDataName->setDataColumn('Employee');
                 $myUserDataFirstname->setUserId(3);
-                $myUserDataFirstname->setUserDataKey('Prénom');
-                $myUserDataFirstname->setUserDataColumn('Writer');
+                $myUserDataFirstname->setDataKey('Prénom');
+                $myUserDataFirstname->setDataColumn('Writer');
                 $myArray = [$myUserDataName, $myUserDataFirstname];
                 break;
             case Role::CUSTOMER:
                 $myUserDataName->setUserId(4);
-                $myUserDataName->setUserDataKey('Nom');
-                $myUserDataName->setUserDataColumn('Customer');
+                $myUserDataName->setDataKey('Nom');
+                $myUserDataName->setDataColumn('Customer');
                 $myUserDataFirstname->setUserId(4);
-                $myUserDataFirstname->setUserDataKey('Prénom');
-                $myUserDataFirstname->setUserDataColumn('Viewer');
+                $myUserDataFirstname->setDataKey('Prénom');
+                $myUserDataFirstname->setDataColumn('Viewer');
                 $myArray = [$myUserDataName, $myUserDataFirstname];
                 break;
         }

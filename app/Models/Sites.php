@@ -8,10 +8,10 @@ use \Illuminate\Database\Eloquent\Model;
 class Sites extends Model
 {
 
-    private int $site_Id;
-    private int $site_numberSite;
-    private \DateTime $site_dateStart;
-    private \DateTime $site_dateEnd;
+    private int $site_id;
+    private int $site_number_site;
+    private \DateTime $site_date_start;
+    private \DateTime $site_date_end;
     private \DateTime $created_at;
     private ?\DateTime $updated_at;
     private ?\DateTime $deleted_at;
@@ -33,7 +33,7 @@ class Sites extends Model
      * @return Sites
      */
     public function setId(int $id): Sites {
-        $this->site_Id = $id;
+        $this->site_id = $id;
         return $this;
     }
 
@@ -41,7 +41,7 @@ class Sites extends Model
      * @return int
      */
     public function getId(): int {
-        return $this->site_Id;
+        return $this->site_id;
     }
 
     /**
@@ -49,7 +49,7 @@ class Sites extends Model
      * @return Sites
      */
     public function setNumberSite(int $number): Sites {
-        $this->site_numberSite = $number;
+        $this->site_number_site = $number;
         return $this;
     }
 
@@ -57,7 +57,7 @@ class Sites extends Model
      * @return int
      */
     public function getNumberSite(): int {
-        return $this->site_numberSite;
+        return $this->site_number_site;
     }
 
     /**
@@ -65,7 +65,7 @@ class Sites extends Model
      * @return $this
      */
     public function setDateStart(\DateTime $date): Sites {
-        $this->site_dateStart = $date;
+        $this->site_date_start = $date;
         return $this;
     }
 
@@ -73,7 +73,7 @@ class Sites extends Model
      * @return \DateTime
      */
     public function getDateStart(): \DateTime {
-        return $this->site_dateStart;
+        return $this->site_date_start;
     }
 
     /**
@@ -81,7 +81,7 @@ class Sites extends Model
      * @return $this
      */
     public function setDateEnd(\DateTime $date): Sites {
-        $this->site_dateEnd = $date;
+        $this->site_date_end = $date;
         return $this;
     }
 
@@ -89,7 +89,7 @@ class Sites extends Model
      * @return \DateTime
      */
     public function getDateEnd(): \DateTime {
-        return $this->site_dateEnd;
+        return $this->site_date_end;
     }
 
     public function setCreated(\DateTime $created_at): Sites

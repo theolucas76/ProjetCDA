@@ -14,10 +14,10 @@ class CreateSiteDataTable extends Migration
     public function up()
     {
         Schema::create('hc_site_data', function (Blueprint $table) {
-            $table->bigIncrements('siteData_id');
-            $table->integer('siteData_siteId');
-            $table->string('siteData_key');
-            $table->string('siteData_column');
+            $table->bigIncrements('data_id');
+            $table->integer('data_site_id');
+            $table->string('data_key');
+            $table->string('data_column');
         });
     }
 

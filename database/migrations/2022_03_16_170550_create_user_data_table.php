@@ -14,10 +14,10 @@ class CreateUserDataTable extends Migration
     public function up()
     {
         Schema::create('hc_user_data', function (Blueprint $table) {
-            $table->bigIncrements('userData_id');
-            $table->integer('userData_userId');
-            $table->string('userData_key');
-            $table->string('userData_column');
+            $table->bigIncrements('data_id');
+            $table->integer('data_user_id');
+            $table->string('data_key');
+            $table->string('data_column');
         });
     }
 

@@ -7,10 +7,10 @@ use \Illuminate\Database\Eloquent\Model;
 
 class SitesData extends Model
 {
-    private int $siteData_id;
-    private int $siteData_siteId;
-    private string $siteData_key;
-    private string $siteData_column;
+    private int $data_id;
+    private int $data_site_id;
+    private string $data_key;
+    private string $data_column;
 
     public function __construct()
     {
@@ -26,7 +26,7 @@ class SitesData extends Model
      * @return SitesData
      */
     public function setId(int $id): SitesData {
-        $this->siteData_id = $id;
+        $this->data_id = $id;
         return $this;
     }
 
@@ -34,7 +34,7 @@ class SitesData extends Model
      * @return int
      */
     public function getId(): int {
-        return $this->siteData_id;
+        return $this->data_id;
     }
 
     /**
@@ -42,7 +42,7 @@ class SitesData extends Model
      * @return SitesData
      */
     public function setSiteId(int $siteId): SitesData {
-        $this->siteData_siteId = $siteId;
+        $this->data_site_id = $siteId;
         return $this;
     }
 
@@ -50,7 +50,7 @@ class SitesData extends Model
      * @return int
      */
     public function getSiteId(): int {
-        return $this->siteData_siteId;
+        return $this->data_site_id;
     }
 
     /**
@@ -58,7 +58,7 @@ class SitesData extends Model
      * @return SitesData
      */
     public function setDataKey(string $key): SitesData {
-        $this->siteData_key = $key;
+        $this->data_key = $key;
         return $this;
     }
 
@@ -66,7 +66,7 @@ class SitesData extends Model
      * @return string
      */
     public function getDataKey(): string {
-        return $this->siteData_key;
+        return $this->data_key;
     }
 
     /**
@@ -74,7 +74,7 @@ class SitesData extends Model
      * @return SitesData
      */
     public function setDataColumn(string $column): SitesData {
-        $this->siteData_column = $column;
+        $this->data_column = $column;
         return $this;
     }
 
@@ -82,7 +82,7 @@ class SitesData extends Model
      * @return string
      */
     public function getDataColumn(): string {
-        return $this->siteData_column;
+        return $this->data_column;
     }
 
     /**
@@ -91,10 +91,10 @@ class SitesData extends Model
     public function toArray(): array
     {
         return array(
-            Keys::DATABASE_SITE_DATA_ID => $this->getId(),
+            Keys::DATABASE_DATA_ID => $this->getId(),
             Keys::DATABASE_SITE_DATA_SITE_ID => $this->getSiteId(),
-            Keys::DATABASE_SITE_DATA_KEY => $this->getDataKey(),
-            Keys::DATABASE_SITE_DATA_COLUMN => $this->getDataColumn()
+            Keys::DATABASE_DATA_KEY => $this->getDataKey(),
+            Keys::DATABASE_DATA_COLUMN => $this->getDataColumn()
         );
     }
 }

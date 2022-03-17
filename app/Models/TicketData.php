@@ -53,10 +53,10 @@ class TicketData extends Model
     public function toArray(): array
     {
         return array(
-            Keys::DATABASE_TICKET_DATA_ID => $this->getDataId(),
+            Keys::DATABASE_DATA_ID => $this->getDataId(),
             Keys::DATABASE_TICKET_DATA_TICKET_ID => $this->getDataTicketId(),
-            Keys::DATABASE_TICKET_DATA_KEY => $this->getDataKey(),
-            Keys::DATABASE_TICKET_DATA_COLUMN => $this->getDataColumn()
+            Keys::DATABASE_DATA_KEY => $this->getDataKey(),
+            Keys::DATABASE_DATA_COLUMN => $this->getDataColumn()
         );
     }
 }
