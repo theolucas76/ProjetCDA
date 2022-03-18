@@ -205,10 +205,13 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $myUser = new Users();
         $result = DB::select("SELECT * FROM users WHERE id = $id AND deleted_at IS NULL ");
 
-        foreach ($result as $item) {
-            $myUser->fromDatabase(json_decode(json_encode($item), true));
+        if (count($result) > 0) {
+            foreach ($result as $item) {
+                $myUser->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myUser;
         }
-        return $myUser;
+        return null;
     }
 
     public static function getUsersByRole(int $role): array
@@ -239,7 +242,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
     {
         $user->setDeleted(new \DateTime());
         return DB::table('users')->where('id', $user->getId())
-                                      ->where('deleted_at', null)
-                                      ->update($user->toArray());
+            ->where('deleted_at', null)
+            ->update($user->toArray());
     }
 }

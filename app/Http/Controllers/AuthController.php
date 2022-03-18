@@ -69,9 +69,6 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = Users::getUserById(6);
-        var_dump(Users::deleteUser($user));
-
         $credentials = $request->only(['login', 'password']);
 
         if (!$token = Auth::attempt($credentials)) {

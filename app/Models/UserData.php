@@ -30,14 +30,17 @@ class UserData extends Model
      * @param int $id
      * @return UserData
      */
-    public function setId(int $id): UserData {
+    public function setId(int $id): UserData
+    {
         $this->data_id = $id;
         return $this;
     }
+
     /**
      * @return int
      */
-    public function getId(): int {
+    public function getId(): int
+    {
         return $this->data_id;
     }
 
@@ -45,7 +48,8 @@ class UserData extends Model
      * @param int $userId
      * @return UserData
      */
-    public function setUserId(int $userId): UserData {
+    public function setUserId(int $userId): UserData
+    {
         $this->data_user_id = $userId;
         return $this;
     }
@@ -53,7 +57,8 @@ class UserData extends Model
     /**
      * @return int
      */
-    public function getUserId(): int {
+    public function getUserId(): int
+    {
         return $this->data_user_id;
     }
 
@@ -61,7 +66,8 @@ class UserData extends Model
      * @param string $key
      * @return UserData
      */
-    public function setDataKey(string $key): UserData {
+    public function setDataKey(string $key): UserData
+    {
         $this->data_key = $key;
         return $this;
     }
@@ -69,7 +75,8 @@ class UserData extends Model
     /**
      * @return string
      */
-    public function getDataKey(): string {
+    public function getDataKey(): string
+    {
         return $this->data_key;
     }
 
@@ -77,7 +84,8 @@ class UserData extends Model
      * @param string $column
      * @return UserData
      */
-    public function setDataColumn(string $column): UserData {
+    public function setDataColumn(string $column): UserData
+    {
         $this->data_column = $column;
         return $this;
     }
@@ -85,7 +93,8 @@ class UserData extends Model
     /**
      * @return string
      */
-    public function getDataColumn(): string {
+    public function getDataColumn(): string
+    {
         return $this->data_column;
     }
 
@@ -99,15 +108,30 @@ class UserData extends Model
         );
     }
 
-    public function fromDatabase(array $array): void {
-        $this->setId( $array[Keys::DATABASE_DATA_ID] );
-        $this->setUserId( $array[Keys::DATABASE_USER_DATA_USER_ID] );
-        $this->setDataKey( $array[Keys::DATABASE_DATA_KEY] );
-        $this->setDataColumn( $array[Keys::DATABASE_DATA_COLUMN] );
+    public function fromDatabase(array $array): void
+    {
+        $this->setId($array[Keys::DATABASE_DATA_ID]);
+        $this->setUserId($array[Keys::DATABASE_USER_DATA_USER_ID]);
+        $this->setDataKey($array[Keys::DATABASE_DATA_KEY]);
+        $this->setDataColumn($array[Keys::DATABASE_DATA_COLUMN]);
     }
 
 
-    public static function getDataByUser(int $user): array {
+    public static function getDataById(int $id): ?UserData
+    {
+        $myUserData = new UserData();
+        $myResult = DB::select("SELECT * FROM hc_user_data WHERE data_id = $id");
+        if (count($myResult) > 0) {
+            foreach ($myResult as $item) {
+                $myUserData->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myUserData;
+        }
+        return null;
+    }
+
+    public static function getDataByUser(int $user): array
+    {
         $myUserDatas = [];
         $myResult = DB::select("SELECT * FROM hc_user_data WHERE data_user_id = $user");
         foreach ($myResult as $item) {
@@ -115,6 +139,24 @@ class UserData extends Model
             $userData->fromDatabase(json_decode(json_encode($item), true));
             $myUserDatas[] = $userData;
         }
-        return$myUserDatas;
+        return $myUserDatas;
     }
+
+    public static function addUserData(UserData $data): bool
+    {
+        return DB::table('hc_user_data')->insert($data->toArray());
+    }
+
+    public static function updateUserData(UserData $data): bool
+    {
+        return DB::table('hc_user_data')->where(Keys::DATABASE_DATA_ID, $data->getId())
+            ->update($data->toArray());
+    }
+
+    public static function deleteUserData(UserData $data): bool
+    {
+        $id = $data->getId();
+        return DB::delete("DELETE FROM hc_user_data WHERE data_id = $id");
+    }
+
 }
