@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Auth\Authorizable;
 
 class Users extends Model implements AuthenticatableContract, AuthorizableContract
@@ -49,9 +50,19 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 
     private ?\DateTime $deleted_at;
 
-    public function __construct()
+    public function __construct(?Users $user = null)
     {
         parent::__construct();
+		if ($user !== null) {
+			$this->setId($user->getId());
+			$this->setLogin($user->getLogin());
+			$this->setPassword($user->getPassword());
+			$this->setRole($user->getRole());
+			$this->setJob($user->getJob());
+			$this->setCreated($user->getCreated());
+			$this->setUpdated($user->getUpdated());
+			$this->setDeleted($user->getDeleted());
+		}
         $this->setId( 0 );
         $this->setLogin('');
         $this->setPassword('');
@@ -141,4 +152,36 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
             Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
         );
     }
+	
+//	protected function fetchAll(string $class): array {
+//		return array_filter(
+//			array_map(static function (array $array) use ($class) {
+//				$myObject = new $class();
+//
+//			})
+//		);
+//	}
+	
+	public static function getAllUsers() {
+		
+		$user = new Users();
+		$reflection = new \ReflectionObject($user);
+		var_dump($reflection);
+		$result = DB::select('SELECT * FROM users WHERE deleted_at IS NULL ');
+		foreach ($result as $r) {
+			var_dump(new \ReflectionObject($r));
+		}
+		var_dump($result);
+		
+//		$result = DB::setFetchMode()
+//		var_dump($result);
+	}
+	public static function getUserById(int $id) {
+		$result = DB::select("SELECT * FROM users WHERE id = $id AND deleted_at IS NULL ");
+		foreach ($result as $item) {
+			$myUser = new Users($item);
+		}
+	}
+	
+	
 }

@@ -26,26 +26,29 @@ class AuthController extends Controller
         $this->validate($request, [
             'login' => 'required|string|unique:users',
             'password' => 'required|string',
-            'role' => 'required|integer'
+            'role' => 'required|integer',
+	        'job' => 'required|integer'
         ]);
-
+		
         try
         {
+	        
             $user = new Users;
             $user->login = $request->input('login');
             $user->password = app('hash')->make($request->input('password'));
             $user->role = $request->input('role');
+			$user->job = $request->input('job');
             $user->save();
 
+			
+			
             return response()->json( [
                 'entity' => 'users',
                 'action' => 'create',
                 'result' => 'success'
             ], 201);
 
-        }
-        catch (\Exception $e)
-        {
+        }catch (\Exception $e) {
             return response()->json( [
                 'entity' => 'users',
                 'action' => 'create',
@@ -62,7 +65,8 @@ class AuthController extends Controller
             'login' => 'required|string',
             'password' => 'required',
         ]);
-
+		Users::getAllUsers();
+		
         $credentials = $request->only(['login', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {
