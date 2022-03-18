@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class TicketData extends Model
 {
@@ -58,5 +59,47 @@ class TicketData extends Model
             Keys::DATABASE_DATA_KEY => $this->getDataKey(),
             Keys::DATABASE_DATA_COLUMN => $this->getDataColumn()
         );
+    }
+
+    public function fromDatabase(array $array): void {
+        $this->setDataId( $array[Keys::DATABASE_DATA_ID] );
+        $this->setDataTicketId( $array[Keys::DATABASE_TICKET_DATA_TICKET_ID] );
+        $this->setDataKey( $array[Keys::DATABASE_DATA_KEY] );
+        $this->setDataColumn( $array[Keys::DATABASE_DATA_COLUMN] );
+    }
+
+    public static function getTicketDataById(int $id): ?TicketData {
+        $myTicketData = new TicketData();
+        $myResult = DB::select("SELECT * FROM hc_ticket_data WHERE data_id = $id ");
+        if (count($myResult) > 0) {
+            foreach ($myResult as $item) {
+                $myTicketData->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myTicketData;
+        }
+        return null;
+    }
+
+    public static function getTicketDataByTicket(int $ticket_id): array {
+        $myTicketDatas = [];
+        $myResult = DB::select("SELECT * FROM hc_ticket_data WHERE data_ticket_id = $ticket_id");
+        foreach ($myResult as $item) {
+            $data = new TicketData();
+            $data->fromDatabase(json_decode(json_encode($item), true));
+            $myTicketDatas[] = $data;
+        }
+        return $myTicketDatas;
+    }
+
+    public static function addTicketData(TicketData $data): bool {
+        return DB::table('hc_ticket_data')->insert($data->toArray());
+    }
+
+    public static function updateTicketData(TicketData $data): bool {
+        return DB::table('hc_ticket_data')->where('data_id', $data->getDataId())->update($data->toArray());
+    }
+
+    public static function deleteTicketData(int $id): bool {
+        return DB::delete("DELETE FROM hc_ticket_data WHERE data_id = $id");
     }
 }

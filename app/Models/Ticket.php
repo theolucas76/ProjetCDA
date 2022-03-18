@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Utils\Functions;
 use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Ticket extends Model
 {
@@ -89,4 +91,50 @@ class Ticket extends Model
         );
     }
 
+    public function fromDatabase(array $array): void {
+        $this->setTicketId( $array[Keys::DATABASE_TICKET_ID] );
+        $this->setTicketSubject( $array[Keys::DATABASE_TICKET_SUBJECT] );
+        $this->setCreated(Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]));
+        $this->setUpdated(($array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null));
+        $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
+    }
+
+    public static function getTicketBySite(string $siteId): array {
+        $myTickets = [];
+        $myResult = DB::select("SELECT t.* FROM hc_ticket t INNER JOIN hc_ticket_data d
+                                WHERE d.data_ticket_id = t.ticket_id AND d.data_key = 'site' AND d.data_column = $siteId");
+        foreach ($myResult as $item) {
+            $ticket = new Ticket();
+            $ticket->fromDatabase(json_decode(json_encode($item), true));
+            $myTickets[] = $ticket;
+        }
+        return $myTickets;
+    }
+
+    public static function getTicketByEmployee(string $userId): array {
+        $myTickets = [];
+        $myResult = DB::select("SELECT t.* FROM hc_ticket t INNER JOIN hc_ticket_data d
+                                WHERE d.data_ticket_id = t.ticket_id AND d.data_key = 'employee' AND d.data_column = $userId");
+        foreach ($myResult as $item) {
+            $ticket = new Ticket();
+            $ticket->fromDatabase(json_decode(json_encode($item), true));
+            $myTickets[] = $ticket;
+        }
+        return $myTickets;
+    }
+
+    public static function addTicket(Ticket $ticket): bool {
+        return DB::table('hc_ticket')->insert($ticket->toArray());
+    }
+
+    public static function updateTicket(Ticket $ticket): bool {
+        $ticket->setUpdated(new \DateTime());
+        return DB::table('hc_ticket')->where('ticket_id', $ticket->getTicketId())->update($ticket->toArray());
+    }
+
+    public static function deleteTicket(Ticket $ticket): bool {
+        $ticket->setDeleted(new \DateTime());
+        return DB::table('hc_ticket')->where('ticket_id', $ticket->getTicketId())
+            ->where('deleted_at', null)->update($ticket->toArray());
+    }
 }
