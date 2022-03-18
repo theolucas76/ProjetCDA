@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sites;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -29,10 +30,10 @@ class AuthController extends Controller
             'role' => 'required|integer',
 	        'job' => 'required|integer'
         ]);
-		
+
         try
         {
-	        
+
             $user = new Users;
             $user->login = $request->input('login');
             $user->password = app('hash')->make($request->input('password'));
@@ -40,8 +41,8 @@ class AuthController extends Controller
 			$user->job = $request->input('job');
             $user->save();
 
-			
-			
+
+
             return response()->json( [
                 'entity' => 'users',
                 'action' => 'create',
@@ -65,8 +66,9 @@ class AuthController extends Controller
             'login' => 'required|string',
             'password' => 'required',
         ]);
+
 		Users::getAllUsers();
-		
+
         $credentials = $request->only(['login', 'password']);
 
         if (! $token = Auth::attempt($credentials)) {

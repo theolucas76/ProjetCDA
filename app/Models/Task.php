@@ -7,7 +7,6 @@ use \Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-
     private int $task_id;
     private string $task_name;
     private \DateTime $task_date_start;
@@ -15,7 +14,6 @@ class Task extends Model
     private \DateTime $created_at;
     private ?\DateTime $updated_at;
     private ?\DateTime $deleted_at;
-
 
     public function __construct()
     {

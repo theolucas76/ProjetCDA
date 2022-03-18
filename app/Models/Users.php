@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Enums\Role;
+use App\Models\Utils\Functions;
 use App\Models\Utils\Keys;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -152,7 +153,18 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
             Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
         );
     }
-	
+
+    public function fromDatabase(array $array): void {
+        $this->setId( $array[Keys::DATABASE_ID] );
+        $this->setLogin( $array[Keys::DATABASE_LOGIN] );
+        $this->setRole( Role::get($array[Keys::DATABASE_ROLE]) );
+        $this->setJob( $array[Keys::DATABASE_JOB] );
+        $this->setPassword( $array[Keys::DATABASE_PASSWORD] );
+        $this->setCreated( Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]) );
+        $this->setUpdated( ( $array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null ) );
+        $this->setDeleted( ( $array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null ) );
+    }
+
 //	protected function fetchAll(string $class): array {
 //		return array_filter(
 //			array_map(static function (array $array) use ($class) {
@@ -161,18 +173,21 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 //			})
 //		);
 //	}
-	
+
 	public static function getAllUsers() {
-		
-		$user = new Users();
-		$reflection = new \ReflectionObject($user);
-		var_dump($reflection);
+
+
+
 		$result = DB::select('SELECT * FROM users WHERE deleted_at IS NULL ');
 		foreach ($result as $r) {
-			var_dump(new \ReflectionObject($r));
+          //  var_dump($r);
+
+             $user = new Users();
+             $user->fromDatabase(json_decode(json_encode($r), true));
+             var_dump($user);
 		}
-		var_dump($result);
-		
+		// var_dump($result);
+
 //		$result = DB::setFetchMode()
 //		var_dump($result);
 	}
@@ -182,6 +197,6 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 			$myUser = new Users($item);
 		}
 	}
-	
-	
+
+
 }
