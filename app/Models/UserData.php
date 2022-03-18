@@ -108,7 +108,6 @@ class UserData extends Model
 
 
     public static function getDataByUser(int $user): array {
-
         $myUserDatas = [];
         $myResult = DB::select("SELECT * FROM hc_user_data WHERE data_user_id = $user");
         foreach ($myResult as $item) {

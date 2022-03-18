@@ -69,11 +69,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        UserData::getDataByUser(1);
+        $user = Users::getUserById(6);
+        var_dump(Users::deleteUser($user));
 
         $credentials = $request->only(['login', 'password']);
 
-        if (! $token = Auth::attempt($credentials)) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         return $this->respondWithToken($token);

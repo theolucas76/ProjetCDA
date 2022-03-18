@@ -23,7 +23,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
      * @var array
      */
     protected $fillable = [
-       'id', 'login', 'role', 'created_at', 'updated_at', 'deleted_at'
+        'id', 'login', 'role', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -54,63 +54,78 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
     public function __construct(?Users $user = null)
     {
         parent::__construct();
-		if ($user !== null) {
-			$this->setId($user->getId());
-			$this->setLogin($user->getLogin());
-			$this->setPassword($user->getPassword());
-			$this->setRole($user->getRole());
-			$this->setJob($user->getJob());
-			$this->setCreated($user->getCreated());
-			$this->setUpdated($user->getUpdated());
-			$this->setDeleted($user->getDeleted());
-		}
-        $this->setId( 0 );
+        if ($user !== null) {
+            $this->setId($user->getId());
+            $this->setLogin($user->getLogin());
+            $this->setPassword($user->getPassword());
+            $this->setRole($user->getRole());
+            $this->setJob($user->getJob());
+            $this->setCreated($user->getCreated());
+            $this->setUpdated($user->getUpdated());
+            $this->setDeleted($user->getDeleted());
+        }
+        $this->setId(0);
         $this->setLogin('');
         $this->setPassword('');
-        $this->setRole( new Role( Role::UNDEFINED ) );
+        $this->setRole(new Role(Role::UNDEFINED));
         $this->setJob(null);
         $this->setCreated(new \DateTime());
         $this->setUpdated(null);
         $this->setDeleted(null);
     }
 
-    public function setId(int $id): Users {
+    public function setId(int $id): Users
+    {
         $this->id = $id;
         return $this;
     }
-    public function getId(): int {
+
+    public function getId(): int
+    {
         return $this->id;
     }
 
-    public function setLogin(string $login): Users {
+    public function setLogin(string $login): Users
+    {
         $this->login = $login;
         return $this;
     }
-    public function getLogin(): string {
+
+    public function getLogin(): string
+    {
         return $this->login;
     }
 
-    public function setPassword(string $password): Users {
+    public function setPassword(string $password): Users
+    {
         $this->password = $password;
         return $this;
     }
-    public function getPassword(): string {
+
+    public function getPassword(): string
+    {
         return $this->password;
     }
 
-    public function setRole(Role $role): Users {
+    public function setRole(Role $role): Users
+    {
         $this->role = $role;
         return $this;
     }
-    public function getRole(): Role {
+
+    public function getRole(): Role
+    {
         return $this->role;
     }
 
-    public function setJob(?int $job): Users {
+    public function setJob(?int $job): Users
+    {
         $this->job = $job;
         return $this;
     }
-    public function getJob(): ?int {
+
+    public function getJob(): ?int
+    {
         return $this->job;
     }
 
@@ -119,7 +134,9 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->created_at = $created_at;
         return $this;
     }
-    public function getCreated(): \DateTime {
+
+    public function getCreated(): \DateTime
+    {
         return $this->created_at;
     }
 
@@ -128,7 +145,9 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->updated_at = $updated_at;
         return $this;
     }
-    public function getUpdated(): ?\DateTime {
+
+    public function getUpdated(): ?\DateTime
+    {
         return $this->updated_at;
     }
 
@@ -137,11 +156,14 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->deleted_at = $deleted_at;
         return $this;
     }
-    public function getDeleted(): ?\DateTime {
+
+    public function getDeleted(): ?\DateTime
+    {
         return $this->deleted_at;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return array(
             Keys::DATABASE_ID => $this->getId(),
             Keys::DATABASE_LOGIN => $this->getLogin(),
@@ -154,39 +176,43 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         );
     }
 
-    public function fromDatabase(array $array): void {
-        $this->setId( $array[Keys::DATABASE_ID] );
-        $this->setLogin( $array[Keys::DATABASE_LOGIN] );
-        $this->setRole( Role::get($array[Keys::DATABASE_ROLE]) );
-        $this->setJob( $array[Keys::DATABASE_JOB] );
-        $this->setPassword( $array[Keys::DATABASE_PASSWORD] );
-        $this->setCreated( Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]) );
-        $this->setUpdated( ( $array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null ) );
-        $this->setDeleted( ( $array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null ) );
+    public function fromDatabase(array $array): void
+    {
+        $this->setId($array[Keys::DATABASE_ID]);
+        $this->setLogin($array[Keys::DATABASE_LOGIN]);
+        $this->setRole(Role::get($array[Keys::DATABASE_ROLE]));
+        $this->setJob($array[Keys::DATABASE_JOB]);
+        $this->setPassword($array[Keys::DATABASE_PASSWORD]);
+        $this->setCreated(Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]));
+        $this->setUpdated(($array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null));
+        $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
     }
 
-	public static function getUsers(): array {
+    public static function getUsers(): array
+    {
         $myUsers = [];
-		$result = DB::select('SELECT * FROM users WHERE deleted_at IS NULL ');
-		foreach ($result as $item) {
-             $user = new Users();
-             $user->fromDatabase(json_decode(json_encode($item), true));
-             $myUsers[] = $user;
-		}
-		return $myUsers;
-	}
+        $result = DB::select('SELECT * FROM users WHERE deleted_at IS NULL ');
+        foreach ($result as $item) {
+            $user = new Users();
+            $user->fromDatabase(json_decode(json_encode($item), true));
+            $myUsers[] = $user;
+        }
+        return $myUsers;
+    }
 
-	public static function getUserById(int $id): ?Users{
+    public static function getUserById(int $id): ?Users
+    {
         $myUser = new Users();
-		$result = DB::select("SELECT * FROM users WHERE id = $id AND deleted_at IS NULL ");
+        $result = DB::select("SELECT * FROM users WHERE id = $id AND deleted_at IS NULL ");
 
         foreach ($result as $item) {
             $myUser->fromDatabase(json_decode(json_encode($item), true));
         }
         return $myUser;
-	}
+    }
 
-    public static function getUsersByRole(int $role): array {
+    public static function getUsersByRole(int $role): array
+    {
 
         $myUsers = [];
         $myResult = DB::select("SELECT * FROM users WHERE role = $role AND deleted_at IS NULL");
@@ -197,5 +223,23 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
             $myUsers[] = $user;
         }
         return $myUsers;
+    }
+
+    public static function addUser(Users $user): bool
+    {
+        return DB::table('users')->insert($user->toArray());
+    }
+
+    public static function updateUser(Users $user): bool
+    {
+        return DB::table('users')->where('id', $user->getId())->update($user->toArray());
+    }
+
+    public static function deleteUser(Users $user): bool
+    {
+        $user->setDeleted(new \DateTime());
+        return DB::table('users')->where('id', $user->getId())
+                                      ->where('deleted_at', null)
+                                      ->update($user->toArray());
     }
 }
