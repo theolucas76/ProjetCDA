@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Sites;
-use App\Models\SitesData;
+use App\Models\Site;
+use App\Models\SiteData;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +16,7 @@ class SiteSeeder extends Seeder
      */
     public function run()
     {
-        $mySite = new Sites();
+        $mySite = new Site();
         $mySite->setNumberSite(123456);
         $mySite->setDateStart($mySite->getDateStart()->add(new \DateInterval('P10D')));
         $mySite->setDateEnd($mySite->getDateEnd()->add(new \DateInterval('P20D')));
@@ -30,27 +30,27 @@ class SiteSeeder extends Seeder
 
     public function generateSitesData(): array {
 
-        $address = new SitesData();
+        $address = new SiteData();
         $address->setSiteId(1);
         $address->setDataKey('address');
         $address->setDataColumn('14 Rue du Beauvallon 76290 Montivilliers');
 
-        $customer = new SitesData();
+        $customer = new SiteData();
         $customer->setSiteId(1);
         $customer->setDataKey('customer');
         $customer->setDataColumn('4');
 
-        $manager = new SitesData();
+        $manager = new SiteData();
         $manager->setSiteId(1);
         $manager->setDataKey('manager');
         $manager->setDataColumn('2');
 
-        $employee = new SitesData();
+        $employee = new SiteData();
         $employee->setSiteId(1);
         $employee->setDataKey('employee');
         $employee->setDataColumn('3');
 
-        $material = new SitesData();
+        $material = new SiteData();
         $material->setSiteId(1);
         $material->setDataKey('mat-1');
         $material->setDataColumn('10');

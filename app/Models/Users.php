@@ -216,7 +216,6 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 
     public static function getUsersByRole(int $role): array
     {
-
         $myUsers = [];
         $myResult = DB::select("SELECT * FROM users WHERE role = $role AND deleted_at IS NULL");
 
@@ -235,6 +234,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 
     public static function updateUser(Users $user): bool
     {
+        $user->setUpdated(new \DateTime());
         return DB::table('users')->where('id', $user->getId())->update($user->toArray());
     }
 
