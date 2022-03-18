@@ -165,38 +165,37 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->setDeleted( ( $array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null ) );
     }
 
-//	protected function fetchAll(string $class): array {
-//		return array_filter(
-//			array_map(static function (array $array) use ($class) {
-//				$myObject = new $class();
-//
-//			})
-//		);
-//	}
-
-	public static function getAllUsers() {
-
-
-
+	public static function getUsers(): array {
+        $myUsers = [];
 		$result = DB::select('SELECT * FROM users WHERE deleted_at IS NULL ');
-		foreach ($result as $r) {
-          //  var_dump($r);
-
-             $user = new Users();
-             $user->fromDatabase(json_decode(json_encode($r), true));
-             var_dump($user);
-		}
-		// var_dump($result);
-
-//		$result = DB::setFetchMode()
-//		var_dump($result);
-	}
-	public static function getUserById(int $id) {
-		$result = DB::select("SELECT * FROM users WHERE id = $id AND deleted_at IS NULL ");
 		foreach ($result as $item) {
-			$myUser = new Users($item);
+             $user = new Users();
+             $user->fromDatabase(json_decode(json_encode($item), true));
+             $myUsers[] = $user;
 		}
+		return $myUsers;
 	}
 
+	public static function getUserById(int $id): ?Users{
+        $myUser = new Users();
+		$result = DB::select("SELECT * FROM users WHERE id = $id AND deleted_at IS NULL ");
 
+        foreach ($result as $item) {
+            $myUser->fromDatabase(json_decode(json_encode($item), true));
+        }
+        return $myUser;
+	}
+
+    public static function getUsersByRole(int $role): array {
+
+        $myUsers = [];
+        $myResult = DB::select("SELECT * FROM users WHERE role = $role AND deleted_at IS NULL");
+
+        foreach ($myResult as $item) {
+            $user = new Users();
+            $user->fromDatabase(json_decode(json_encode($item), true));
+            $myUsers[] = $user;
+        }
+        return $myUsers;
+    }
 }

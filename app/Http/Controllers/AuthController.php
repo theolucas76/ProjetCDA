@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enums\Role;
 use App\Models\Sites;
+use App\Models\UserData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -67,7 +69,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-		Users::getAllUsers();
+        UserData::getDataByUser(1);
 
         $credentials = $request->only(['login', 'password']);
 

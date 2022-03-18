@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class UserData extends Model
 {
@@ -98,4 +99,23 @@ class UserData extends Model
         );
     }
 
+    public function fromDatabase(array $array): void {
+        $this->setId( $array[Keys::DATABASE_DATA_ID] );
+        $this->setUserId( $array[Keys::DATABASE_USER_DATA_USER_ID] );
+        $this->setDataKey( $array[Keys::DATABASE_DATA_KEY] );
+        $this->setDataColumn( $array[Keys::DATABASE_DATA_COLUMN] );
+    }
+
+
+    public static function getDataByUser(int $user): array {
+
+        $myUserDatas = [];
+        $myResult = DB::select("SELECT * FROM hc_user_data WHERE data_user_id = $user");
+        foreach ($myResult as $item) {
+            $userData = new UserData();
+            $userData->fromDatabase(json_decode(json_encode($item), true));
+            $myUserDatas[] = $userData;
+        }
+        return$myUserDatas;
+    }
 }
