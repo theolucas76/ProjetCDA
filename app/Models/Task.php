@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Utils\Functions;
 use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class Task extends Model
 {
@@ -27,35 +30,47 @@ class Task extends Model
         $this->setDeleted(null);
     }
 
-    public function setTaskId(int $id): Task {
+    public function setTaskId(int $id): Task
+    {
         $this->task_id = $id;
         return $this;
     }
-    public function getTaskId(): int {
+
+    public function getTaskId(): int
+    {
         return $this->task_id;
     }
 
-    public function setTaskName(string $name): Task {
+    public function setTaskName(string $name): Task
+    {
         $this->task_name = $name;
         return $this;
     }
-    public function getTaskName(): string {
+
+    public function getTaskName(): string
+    {
         return $this->task_name;
     }
 
-    public function setDateStart(\DateTime $date): Task {
+    public function setDateStart(\DateTime $date): Task
+    {
         $this->task_date_start = $date;
         return $this;
     }
-    public function getDateStart(): \DateTime {
+
+    public function getDateStart(): \DateTime
+    {
         return $this->task_date_start;
     }
 
-    public function setDateEnd(\DateTime $date): Task {
+    public function setDateEnd(\DateTime $date): Task
+    {
         $this->task_date_end = $date;
         return $this;
     }
-    public function getDateEnd(): \DateTime {
+
+    public function getDateEnd(): \DateTime
+    {
         return $this->task_date_end;
     }
 
@@ -105,4 +120,72 @@ class Task extends Model
             Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
         );
     }
+
+    public function fromDatabase(array $array): void
+    {
+        $this->setTaskId($array[Keys::DATABASE_TASK_ID]);
+        $this->setTaskName($array[Keys::DATABASE_TASK_NAME]);
+        $this->setDateStart($array[Keys::DATABASE_TASK_DATE_START]);
+        $this->setDateEnd($array[Keys::DATABASE_TASK_DATE_END]);
+        $this->setCreated(Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]));
+        $this->setUpdated(($array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null));
+        $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
+    }
+
+    public static function getTaskById(int $task_id): ?Task
+    {
+        $myTask = new Task();
+        $myResult = DB::select("SELECT * FROM hc_task WHERE task_id = $task_id");
+        if (count($myResult) > 0) {
+            foreach ($myResult as $item) {
+                $myTask->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myTask;
+        }
+        return null;
+    }
+
+    public static function getTaskByUser(string $user_id): array
+    {
+        $myTasks = [];
+        $myResult = DB::select("SELECT t.* FROM hc_task t INNER JOIN hc_task_data d
+                    ON t.task_id = d.data_task_id WHERE d.data_key = 'user' AND d.data_column = $user_id");
+        foreach ($myResult as $item) {
+            $task = new Task();
+            $task->fromDatabase(json_decode(json_encode($item), true));
+            $myTasks[] = $task;
+        }
+        return $myTasks;
+    }
+
+    public static function getTaskBySite(string $site_id): array
+    {
+        $myTasks = [];
+        $myResult = DB::select("SELECT t.* FROM hc_task t INNER JOIN hc_task_data d
+                    ON t.task_id = d.data_task_id WHERE d.data_key = 'site' AND d.data_column = $site_id");
+        foreach ($myResult as $item) {
+            $task = new Task();
+            $task->fromDatabase(json_decode(json_encode($item), true));
+            $myTasks[] = $task;
+        }
+        return $myTasks;
+    }
+
+    public static function addTask(Task $task): bool
+    {
+        return DB::table('hc_task')->insert($task->toArray());
+    }
+
+    public static function updateTask(Task $task): bool
+    {
+        $task->setUpdated(new \DateTime());
+        return DB::table('hc_task')->where('task_id', $task->getTaskId())->update($task->toArray());
+    }
+
+    public static function deleteTask(Task $task): bool
+    {
+        $task->setDeleted( new \DateTime() );
+        return DB::table('hc_task')->where('task_id', $task->getTaskId())->update($task->toArray());
+    }
+
 }
