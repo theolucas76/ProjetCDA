@@ -24,5 +24,6 @@ $router->group( ['prefix' => 'api/v1', 'middleware' => 'auth'], function ($route
 $router->group(['prefix' => 'api/v1'], function ($router) {
     $router->post('register', 'AuthController@register');
     $router->post('login', 'AuthController@login');
+    $router->get('user/{user_id}', 'UsersController@getAction');
 });
 
