@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Utils\Functions;
 use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Material extends Model
 {
@@ -23,19 +25,25 @@ class Material extends Model
         $this->setDeleted(null);
     }
 
-    public function setMaterialId(int $id): Material {
+    public function setMaterialId(int $id): Material
+    {
         $this->material_id = $id;
         return $this;
     }
-    public function getMaterialId(): int {
+
+    public function getMaterialId(): int
+    {
         return $this->material_id;
     }
 
-    public function setMaterialName(string $name): Material {
+    public function setMaterialName(string $name): Material
+    {
         $this->material_name = $name;
         return $this;
     }
-    public function getMaterialName(): string {
+
+    public function getMaterialName(): string
+    {
         return $this->material_name;
     }
 
@@ -82,4 +90,44 @@ class Material extends Model
             Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
         );
     }
+
+    public function fromDatabase(array $array): void
+    {
+        $this->setMaterialId($array[Keys::DATABASE_MATERIAL_ID]);
+        $this->setMaterialName($array[Keys::DATABASE_MATERIAL_NAME]);
+        $this->setCreated(Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]));
+        $this->setUpdated(($array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null));
+        $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
+    }
+
+    public static function getMaterialById(int $id): ?Material
+    {
+        $myMaterial = new Material();
+        $myResult = DB::select("SELECT * FROM hc_material WHERE material_id = $id");
+        if (count($myResult) > 0) {
+            foreach ($myResult as $item) {
+                $myMaterial->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myMaterial;
+        }
+        return null;
+    }
+
+    public static function addMaterial(Material $material): bool
+    {
+        return DB::table('hc_material')->insert($material->toArray());
+    }
+
+    public static function updateMaterial(Material $material): bool
+    {
+        $material->setUpdated(new \DateTime());
+        return DB::table('hc_material')->where('material_id', $material->getMaterialId())->update($material->toArray());
+    }
+
+    public static function deleteMaterial(Material $material): bool
+    {
+        $material->setDeleted(new \DateTime());
+        return DB::table('hc_material')->where('material_id', $material->getMaterialId())->update($material->toArray());
+    }
+
 }
