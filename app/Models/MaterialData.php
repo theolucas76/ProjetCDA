@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class MaterialData extends Model
 {
@@ -62,4 +63,50 @@ class MaterialData extends Model
         );
     }
 
+    public function fromDatabase(array $array): void {
+        $this->setDataId( $array[Keys::DATABASE_DATA_ID] );
+        $this->setDataMaterialId( $array[Keys::DATABASE_MATERIAL_DATA_MATERIAL_ID] );
+        $this->setDataKey( $array[Keys::DATABASE_DATA_KEY] );
+        $this->setDataColumn( $array[Keys::DATABASE_DATA_COLUMN] );
+    }
+
+    public static function getMaterialDataById(int $data_id): ?MaterialData
+    {
+        $myMaterialData = new MaterialData();
+        $myResult = DB::select("SELECT * FROM hc_material_data WHERE data_id = $data_id");
+        if (count($myResult) > 0) {
+            foreach ($myResult as $item) {
+                $myMaterialData->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myMaterialData;
+        }
+        return null;
+    }
+
+    public static function getMaterialDataByMaterial(int $data_material_id): array
+    {
+        $myMaterialDatas = [];
+        $myResult = DB::select("SELECT * FROM hc_material_data WHERE data_material_id = $data_material_id");
+        foreach ($myResult as $item) {
+            $data = new MaterialData();
+            $data->fromDatabase(json_decode(json_encode($item), true));
+            $myMaterialDatas[] = $data;
+        }
+        return $myMaterialDatas;
+    }
+
+    public static function addMaterialData(MaterialData $data): bool
+    {
+        return DB::table('hc_material_data')->insert($data->toArray());
+    }
+
+    public static function updateMaterialData(MaterialData $data): bool
+    {
+        return DB::table('hc_material_data')->where('data_id', $data->getDataId())->update($data->toArray());
+    }
+
+    public static function deleteMaterialData(int $id): bool
+    {
+        return DB::delete("DELETE FROM hc_material_data WHERE data_id = $id");
+    }
 }

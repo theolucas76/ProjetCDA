@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Enums\Role;
-use App\Models\Site;
-use App\Models\UserData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -69,13 +66,14 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-
-
         $credentials = $request->only(['login', 'password']);
 
         if (!$token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+
+        // RETURN CURRENT USER
+        // var_dump($this->me()->getData());
         return $this->respondWithToken($token);
     }
 
