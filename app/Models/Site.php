@@ -239,7 +239,7 @@ class Site extends Model
     {
         $site->setDeleted(new \DateTime());
         return DB::table('hc_site')->where('site_id', $site->getId())
-            ->where('deleted_ad', null)->update($site->toArray());
+            ->where('deleted_at', null)->update($site->toArray());
     }
 
 }
