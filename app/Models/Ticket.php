@@ -99,6 +99,19 @@ class Ticket extends Model
         $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
     }
 
+    public static function getTicketById(int $ticket_id): ?Ticket
+    {
+        $myTicket = new Ticket();
+        $myResult = DB::select("SELECT * FROM hc_ticket WHERE ticket_id = $ticket_id");
+        if (count($myResult) > 0) {
+            foreach ($myResult as $item) {
+                $myTicket->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myTicket;
+        }
+        return null;
+    }
+
     public static function getTicketBySite(string $siteId): array {
         $myTickets = [];
         $myResult = DB::select("SELECT t.* FROM hc_ticket t INNER JOIN hc_ticket_data d ON t.ticket_id = d.data_ticket_id
