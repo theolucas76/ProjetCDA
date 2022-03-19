@@ -125,8 +125,8 @@ class Task extends Model
     {
         $this->setTaskId($array[Keys::DATABASE_TASK_ID]);
         $this->setTaskName($array[Keys::DATABASE_TASK_NAME]);
-        $this->setDateStart($array[Keys::DATABASE_TASK_DATE_START]);
-        $this->setDateEnd($array[Keys::DATABASE_TASK_DATE_END]);
+        $this->setDateStart(Functions::fromUnix($array[Keys::DATABASE_TASK_DATE_START]));
+        $this->setDateEnd(Functions::fromUnix($array[Keys::DATABASE_TASK_DATE_END]));
         $this->setCreated(Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]));
         $this->setUpdated(($array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null));
         $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
@@ -185,7 +185,8 @@ class Task extends Model
     public static function deleteTask(Task $task): bool
     {
         $task->setDeleted( new \DateTime() );
-        return DB::table('hc_task')->where('task_id', $task->getTaskId())->update($task->toArray());
+        return DB::table('hc_task')->where('task_id', $task->getTaskId())
+            ->where('deleted_at', null)->update($task->toArray());
     }
 
 }

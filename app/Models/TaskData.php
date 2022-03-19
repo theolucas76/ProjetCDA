@@ -73,7 +73,7 @@ class TaskData extends Model
     public static function getTaskDataById(int $data_id): ?TaskData
     {
         $myTaskData = new TaskData();
-        $myResult = DB::select("SELECT * FROM hc_task_data WHERE data_id $data_id");
+        $myResult = DB::select("SELECT * FROM hc_task_data WHERE data_id = $data_id");
         if (count($myResult) > 0) {
             foreach ($myResult as $item) {
                 $myTaskData->fromDatabase( json_decode(json_encode( $item ), true) );
