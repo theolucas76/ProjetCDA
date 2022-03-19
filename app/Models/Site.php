@@ -201,7 +201,7 @@ class Site extends Model
     public static function getDeletedSitesByUser(string $userId): array
     {
         $myDeletedSites = [];
-        $myResult = DB::select("SELECT s.* FROM hc_site s INNER JOIN hc_site_data d
+        $myResult = DB::select("SELECT s.* FROM hc_site s INNER JOIN hc_site_data d ON s.site_id = d.data_site_id
                                 WHERE s.site_id = d.data_site_id AND d.data_column = $userId AND s.deleted_at IS NOT NULL");
         foreach ($myResult as $item) {
             $site = new Site();
@@ -214,7 +214,7 @@ class Site extends Model
     public static function getSiteByUser(string $userId): array
     {
         $mySites = [];
-        $myResult = DB::select("SELECT s.* FROM hc_site s INNER JOIN hc_site_data d
+        $myResult = DB::select("SELECT s.* FROM hc_site s INNER JOIN hc_site_data d ON s.site_id = d.data_site_id
                                 WHERE s.site_id = d.data_site_id AND d.data_column = $userId");
         foreach ($myResult as $item) {
             $site = new Site();

@@ -101,7 +101,7 @@ class Ticket extends Model
 
     public static function getTicketBySite(string $siteId): array {
         $myTickets = [];
-        $myResult = DB::select("SELECT t.* FROM hc_ticket t INNER JOIN hc_ticket_data d
+        $myResult = DB::select("SELECT t.* FROM hc_ticket t INNER JOIN hc_ticket_data d ON t.ticket_id = d.data_ticket_id
                                 WHERE d.data_ticket_id = t.ticket_id AND d.data_key = 'site' AND d.data_column = $siteId");
         foreach ($myResult as $item) {
             $ticket = new Ticket();
@@ -113,7 +113,7 @@ class Ticket extends Model
 
     public static function getTicketByEmployee(string $userId): array {
         $myTickets = [];
-        $myResult = DB::select("SELECT t.* FROM hc_ticket t INNER JOIN hc_ticket_data d
+        $myResult = DB::select("SELECT t.* FROM hc_ticket t INNER JOIN hc_ticket_data d ON t.ticket_id = d.data_ticket_id
                                 WHERE d.data_ticket_id = t.ticket_id AND d.data_key = 'employee' AND d.data_column = $userId");
         foreach ($myResult as $item) {
             $ticket = new Ticket();
