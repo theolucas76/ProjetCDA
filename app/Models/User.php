@@ -34,6 +34,24 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
 
+    /**
+     * @OA\Schema(
+     *      schema="LoginRequest",
+     *      required={"login", "password"},
+     *      @OA\Property(
+     *          property="login",
+     *          type="string",
+     *          default="director",
+     *          description="Login of the user"
+     *      ),
+     *      @OA\Property(
+     *          property="password",
+     *          type="string",
+     *          default="director",
+     *          description="Password of the user"
+     *      )
+     * )
+     */
 
 
     /**
