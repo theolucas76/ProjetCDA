@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('login')->unique();
             $table->string('password');
             $table->integer('role');
-            $table->integer('job')->nullable();
+            $table->integer('job');
             $table->integer('created_at')->nullable();
             $table->integer('updated_at')->nullable();
             $table->integer('deleted_at')->nullable();

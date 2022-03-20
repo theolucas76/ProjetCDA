@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Enums\Job;
 use App\Models\Enums\Role;
 use App\Models\UserData;
 use App\Models\Users;
@@ -60,24 +61,25 @@ class UserSeeder extends Seeder
                 $myUser->setLogin('director');
                 $myUser->setPassword(Hash::make('director'));
                 $myUser->setRole($role);
-                $myUser->setJob(1);
+                $myUser->setJob(new Job(Job::UNDEFINED));
                 break;
             case Role::MANAGER:
                 $myUser->setLogin('manager');
                 $myUser->setPassword(Hash::make('manager'));
                 $myUser->setRole($role);
-                $myUser->setJob(2);
+                $myUser->setJob(new Job(Job::UNDEFINED));
                 break;
             case Role::EMPLOYEE:
                 $myUser->setLogin('employee');
                 $myUser->setPassword(Hash::make('employee'));
                 $myUser->setRole($role);
-                $myUser->setJob(10);
+                $myUser->setJob(new Job(Job::PLUMBER));
                 break;
             case Role::CUSTOMER:
                 $myUser->setLogin('customer');
                 $myUser->setPassword(Hash::make('customer'));
                 $myUser->setRole($role);
+                $myUser->setJob(new Job(Job::UNDEFINED));
                 break;
         }
         return $myUser;

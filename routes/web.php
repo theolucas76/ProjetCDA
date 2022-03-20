@@ -17,12 +17,16 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->group( ['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router) {
-    $router->get('me', 'AuthController@me');
+$router->group( ['prefix' => 'api/v1/users', 'middleware' => 'auth'], function ($router) {
+    $router->get('{userId}', 'UsersController@getAction');
+    $router->get('', 'UsersController@getsAction');
+    $router->put('update', 'UsersController@putAction');
+    $router->delete('delete/{userId}', 'UsersController@deleteAction');
 } );
 
 $router->group(['prefix' => 'api/v1'], function ($router) {
-    $router->post('register', 'AuthController@register');
+    $router->post('register', 'UsersController@postAction');
     $router->post('login', 'AuthController@login');
+
 });
 

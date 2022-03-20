@@ -8,10 +8,12 @@ use Illuminate\Http\Request;
 use App\Models\Users;
 use Illuminate\Validation\ValidationException;
 
+
 class AuthController extends Controller
 {
     public function __construct()
     {
+        parent::__construct();
         $this->middleware('auth:api', ['except' => ['login','register']]);
     }
 
@@ -39,8 +41,6 @@ class AuthController extends Controller
             $user->role = $request->input('role');
 			$user->job = $request->input('job');
             $user->save();
-
-
 
             return response()->json( [
                 'entity' => 'users',
@@ -71,17 +71,12 @@ class AuthController extends Controller
         if (!$token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-
-        // RETURN CURRENT USER
-        // var_dump($this->me()->getData());
         return $this->respondWithToken($token);
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function me(): JsonResponse
+    public static function me(): ?Users
     {
-        return response()->json(auth()->user());
+        $myId = auth()->user()->getAuthIdentifier();
+        return Users::getUserById($myId);
     }
 }
