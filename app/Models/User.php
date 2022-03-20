@@ -13,7 +13,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable;
 
-
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.

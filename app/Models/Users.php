@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Enums\Job;
 use App\Models\Enums\Role;
 use App\Models\Utils\Functions;
 use App\Models\Utils\Keys;
@@ -17,13 +18,17 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 {
     use Authenticatable, Authorizable, HasFactory;
 
+    protected $primaryKey = 'id';
+
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id', 'login', 'role', 'created_at', 'updated_at', 'deleted_at'
+        'id', 'login', 'role','job', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -43,7 +48,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
 
     private Role $role;
 
-    private ?int $job;
+    private Job $job;
 
     private \DateTime $created_at;
 
@@ -68,7 +73,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->setLogin('');
         $this->setPassword('');
         $this->setRole(new Role(Role::UNDEFINED));
-        $this->setJob(null);
+        $this->setJob(new Job(Job::UNDEFINED));
         $this->setCreated(new \DateTime());
         $this->setUpdated(null);
         $this->setDeleted(null);
@@ -118,13 +123,13 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         return $this->role;
     }
 
-    public function setJob(?int $job): Users
+    public function setJob(Job $job): Users
     {
         $this->job = $job;
         return $this;
     }
 
-    public function getJob(): ?int
+    public function getJob(): Job
     {
         return $this->job;
     }
@@ -169,7 +174,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
             Keys::DATABASE_LOGIN => $this->getLogin(),
             Keys::DATABASE_PASSWORD => $this->getPassword(),
             Keys::DATABASE_ROLE => $this->getRole()->__toInt(),
-            Keys::DATABASE_JOB => $this->getJob(),
+            Keys::DATABASE_JOB => $this->getJob()->__toInt(),
             Keys::DATABASE_CREATED_AT => $this->getCreated()->getTimestamp(),
             Keys::DATABASE_UPDATED_AT => ($this->getUpdated() !== null ? $this->getUpdated()->getTimestamp() : null),
             Keys::DATABASE_DELETED_AT => ($this->getDeleted() !== null ? $this->getDeleted()->getTimestamp() : null)
@@ -181,7 +186,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->setId($array[Keys::DATABASE_ID]);
         $this->setLogin($array[Keys::DATABASE_LOGIN]);
         $this->setRole(Role::get($array[Keys::DATABASE_ROLE]));
-        $this->setJob($array[Keys::DATABASE_JOB]);
+        $this->setJob(Job::get($array[Keys::DATABASE_JOB]));
         $this->setPassword($array[Keys::DATABASE_PASSWORD]);
         $this->setCreated(Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]));
         $this->setUpdated(($array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null));
@@ -214,10 +219,36 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         return null;
     }
 
+    public static function getUserByLogin(string $login): ?Users {
+        $myUser = new Users();
+        $myResult = DB::select("SELECT * FROM users WHERE login = '$login'");
+
+        if (count($myResult) > 0) {
+            foreach ( $myResult as $item ) {
+                $myUser->fromDatabase(json_decode(json_encode($item), true));
+            }
+            return $myUser;
+        }
+        return null;
+    }
+
     public static function getUsersByRole(int $role): array
     {
         $myUsers = [];
         $myResult = DB::select("SELECT * FROM users WHERE role = $role AND deleted_at IS NULL");
+
+        foreach ($myResult as $item) {
+            $user = new Users();
+            $user->fromDatabase(json_decode(json_encode($item), true));
+            $myUsers[] = $user;
+        }
+        return $myUsers;
+    }
+
+    public static function getUsersByJob(int $job): array
+    {
+        $myUsers = [];
+        $myResult = DB::select("SELECT * FROM users WHERE job = $job");
 
         foreach ($myResult as $item) {
             $user = new Users();
