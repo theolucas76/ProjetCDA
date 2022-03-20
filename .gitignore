@@ -6,3 +6,6 @@ Homestead.yaml
 .phpunit.result.cache
 .idea
 .idea/**
+/resources/views/vendor
+/storage/api-docs
+/public/swagger-ui-assets

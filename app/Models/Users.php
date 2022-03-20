@@ -14,6 +14,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Auth\Authorizable;
 
+/**
+ * @OA\Schema (
+ *     schema="Users",
+ *     description="Users Model"
+ * )
+ */
+
 class Users extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
@@ -40,20 +47,52 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         'password',
     ];
 
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $id;
 
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $login;
 
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $password;
 
+    /**
+     * @OA\Property
+     * @var Role
+     */
     private Role $role;
 
+    /**
+     * @OA\Property
+     * @var Job
+     */
     private Job $job;
 
+    /**
+     * @OA\Property
+     * @var \DateTime
+     */
     private \DateTime $created_at;
 
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $updated_at;
 
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $deleted_at;
 
     public function __construct(?Users $user = null)
@@ -193,6 +232,12 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
     }
 
+
+    /**
+     *
+     * @return array
+     */
+
     public static function getUsers(): array
     {
         $myUsers = [];
@@ -258,10 +303,66 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         return $myUsers;
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="RegisterRequest",
+     *     required={"login", "password", "role", "job"},
+     *     @OA\Property (
+     *          property="login",
+     *          type="string",
+     *          default="test12345",
+     *          description="Login of the user"
+     *     ),
+     *     @OA\Property(
+     *          property="password",
+     *          type="string",
+     *          default="Test12345",
+     *          description="Password user"
+     *     ),
+     *     @OA\Property(
+     *          property="role",
+     *          type="integer",
+     *          default=1,
+     *          description="User's role"
+     *      ),
+     *     @OA\Property(
+     *          property="job",
+     *          type="integer",
+     *          default=0,
+     *          description="User's job"
+     *     )
+     * )
+     *
+     *
+     * @param Users $user
+     * @return bool
+     */
+
     public static function addUser(Users $user): bool
     {
         return DB::table('users')->insert($user->toArray());
     }
+
+    /**
+     *  * @OA\Schema(
+     *     schema="PutLoginPasswordRequest",
+     *     required={"login", "password", "role", "job"},
+     *     @OA\Property (
+     *          property="login",
+     *          type="string",
+     *          default="test12345",
+     *          description="Login of the user"
+     *     ),
+     *     @OA\Property(
+     *          property="password",
+     *          type="string",
+     *          default="Test12345",
+     *          description="Password user"
+     *     )
+     * )
+     * @param Users $user
+     * @return bool
+     */
 
     public static function updateUser(Users $user): bool
     {
