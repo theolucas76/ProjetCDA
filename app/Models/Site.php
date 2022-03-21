@@ -266,6 +266,18 @@ class Site extends Model
         return $mySites;
     }
 
+    public static function getSitesByYear(int $startYear, int $endYear): array
+    {
+        $mySites = [];
+        $myResult = DB::select("SELECT * FROM hc_site s WHERE s.site_date_start BETWEEN $startYear AND $endYear");
+        foreach ($myResult as $item) {
+            $site = new Site();
+            $site->fromDatabase( json_decode(json_encode($item), true) );
+            $mySites[] = $site;
+        }
+        return $mySites;
+    }
+
     /**
      * @OA\Schema(
      *     schema="PostSiteRequest",

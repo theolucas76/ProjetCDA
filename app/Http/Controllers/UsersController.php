@@ -166,6 +166,76 @@ class UsersController extends Controller
         return $this->okResponse($response, array( 'users_count' => count(Users::getAllUsers()) ) );
     }
 
+    /**
+     * @OA\Get(
+     *     path="/count/usersByRole/{roleId}",
+     *     summary="Get count users by role",
+     *     tags={"Counts"},
+     *     description="Number of users by given role",
+     *     @OA\Parameter(
+     *          name="roleId",
+     *          description="role id",
+     *          required=true,
+     *          in="path"
+     *     ),
+     *     @OA\Response(
+     *     response="200",
+     *     description="Success",
+     *     @OA\JsonContent(
+     *          @OA\Property(
+     *             property="count_by_role",
+     *             type="integer",
+     *             default=12
+     *          )
+     *     )
+     * )
+     * )
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param string $roleId
+     * @return Response
+     */
+    public function getUsersCountByRoleAction(Request $request, Response $response, string $roleId): Response
+    {
+        return $this->okResponse($response, array( 'count_by_role' => count(Users::getUsersByRole($roleId))));
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/count/usersByJob/{jobId}",
+     *     summary="Get count users by job",
+     *     description="Number of users with given job",
+     *     tags={"Counts"},
+     *     @OA\Parameter(
+     *          name="jobId",
+     *          description="job id",
+     *          required=true,
+     *          in="path"
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="count_by_job",
+     *                  type="integer",
+     *                  default=12
+     *              )
+     *          )
+     *      )
+     * )
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param string $jobId
+     * @return Response
+     */
+
+    public function getUsersCountByJobAction(Request $request, Response $response, string $jobId): Response
+    {
+        return $this->okResponse($response, array( 'count_by_job' => count(Users::getUsersByJob($jobId)) ));
+    }
 
     /**
      * @OA\Post(

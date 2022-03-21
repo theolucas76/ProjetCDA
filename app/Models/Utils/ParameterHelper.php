@@ -121,5 +121,4 @@ class ParameterHelper
     {
         return ParameterHelper::testInt($controller, $request, $response, 'site_date_end', $required);
     }
-
 }
