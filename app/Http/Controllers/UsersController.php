@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enums\Role;
+use App\Models\User;
+use App\Models\UserData;
 use App\Models\Users;
 use App\Models\Utils\ParameterHelper;
 use Illuminate\Http\Request;
@@ -29,8 +31,6 @@ use OpenApi\Annotations as OA;
  * )
  *
  */
-
-
 class UsersController extends Controller
 {
 
@@ -41,6 +41,7 @@ class UsersController extends Controller
      *     summary="Get User By Id",
      *     tags={"Users"},
      *     security={{ "apiAuth": {} }},
+     *     description="get user and user's data",
      *     @OA\Parameter(
      *          name="userId",
      *          description="User id",
@@ -50,12 +51,17 @@ class UsersController extends Controller
      *     @OA\Response(
      *          response="200",
      *          description="Success",
-     *          @OA\JsonContent(ref="#/components/schemas/Users")
+     *          @OA\JsonContent(ref="#/components/schemas/UsersWithData")
      *     ),
      *     @OA\Response(
      *          response="404",
      *          description="Not Found",
      *          @OA\JsonContent(ref="#/components/schemas/NotFoundResponse")
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized Response",
+     *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
      *     )
      * )
      *
@@ -74,6 +80,12 @@ class UsersController extends Controller
         }
         $myUserArray = $myUser->toArray();
         unset($myUserArray['password']);
+
+        $myUserData = UserData::getDataByUser($myUser->getId());
+        $myUserArray['data'] = array_map(static function (UserData $data): array {
+            return $data->toArray();
+        }, $myUserData);
+
         return $this->okResponse($response, $myUserArray);
     }
 
@@ -82,8 +94,9 @@ class UsersController extends Controller
      * @OA\Get(
      *     path="/users",
      *     summary="Get All Users",
-     *     tags={"Users"},
+     *     tags={"Admin", "Users"},
      *     security={{ "apiAuth": {} }},
+     *     description="Get all users and user's data, only for director",
      *     @OA\Response(
      *          response="200",
      *          description="Success",
@@ -91,8 +104,8 @@ class UsersController extends Controller
      *              @OA\Property(
      *                  property="users",
      *                  type="array",
-     *                  @OA\Items(ref="#/components/schemas/Users"),
-     *                  @OA\Items(ref="#/components/schemas/Users")
+     *                  @OA\Items(ref="#/components/schemas/UsersWithData"),
+     *                  minItems=2
      *              )
      *          )
      *     ),
@@ -114,11 +127,43 @@ class UsersController extends Controller
         if (AuthController::me()->getRole()->__toInt() === Role::DIRECTOR) {
             return $this->okResponse($response, array('users' => array_map(static function (Users $user): array {
                 $myUserArray = $user->toArray();
+                $myUserData = UserData::getDataByUser($user->getId());
+                $myUserArray['data'] = $myUserData;
                 unset($myUserArray['password']);
                 return $myUserArray;
-            }, Users::getUsers())));
+            }, Users::getAllUsers())));
         }
-       return $this->unauthorizedResponse($response, 'only director');
+        return $this->unauthorizedResponse($response, 'only director');
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/count/users",
+     *     summary="Count of users",
+     *     tags={"Counts"},
+     *     description="Number of users in database",
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *              property="users_count",
+     *              type="integer",
+     *              default=12
+     *              )
+     *          )
+     *     )
+     * )
+     *
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+
+    public function getCountAction(Request $request, Response $response): Response
+    {
+        return $this->okResponse($response, array( 'users_count' => count(Users::getAllUsers()) ) );
     }
 
 
@@ -143,6 +188,11 @@ class UsersController extends Controller
      *          response="500",
      *          description="Internal Server Error",
      *          @OA\JsonContent(ref="#/components/schemas/InternalServerErrorResponse")
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized Response",
+     *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
      *     )
      * )
      *
@@ -247,7 +297,14 @@ class UsersController extends Controller
 
         $myLogin = ParameterHelper::testLogin($this, $request, $response, false);
         if ($myLogin !== null) {
-            $myUser->setLogin($myLogin);
+            $loginUser = Users::getUserByLogin($myLogin);
+            if ( $loginUser !== null && $myUser->getId() === $loginUser->getId() ){
+                $myUser->setLogin($myLogin);
+            }elseif ($loginUser === null) {
+                $myUser->setLogin($myLogin);
+            }else {
+                return $this->notAcceptableResponse($response, 'login exist');
+            }
         }
 
         $myPassword = ParameterHelper::testPassword($this, $request, $response, false) ?? microtime(true);

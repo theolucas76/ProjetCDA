@@ -6,15 +6,43 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ *
+ * @OA\Schema(
+ *     schema="UserData",
+ *     description="UserData Model"
+ * )
+ *
+ */
+
 class UserData extends Model
 {
     protected $fillable = [
         'data_id', 'data_user_id', 'data_key', 'data_column'
     ];
 
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_id;
+
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_user_id;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_key;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_column;
 
     public function __construct()

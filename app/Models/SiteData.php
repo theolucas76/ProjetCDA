@@ -6,11 +6,37 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Schema(
+ *     schema="SiteData",
+ *     description="SiteData Model"
+ * )
+ */
+
 class SiteData extends Model
 {
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_id;
+
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_site_id;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_key;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_column;
 
     public function __construct()
