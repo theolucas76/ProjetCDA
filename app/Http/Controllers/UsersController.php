@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enums\Role;
+use App\Models\User;
 use App\Models\UserData;
 use App\Models\Users;
 use App\Models\Utils\ParameterHelper;
@@ -93,9 +94,9 @@ class UsersController extends Controller
      * @OA\Get(
      *     path="/users",
      *     summary="Get All Users",
-     *     tags={"Users"},
+     *     tags={"Admin", "Users"},
      *     security={{ "apiAuth": {} }},
-     *     description="Get all users and user's data",
+     *     description="Get all users and user's data, only for director",
      *     @OA\Response(
      *          response="200",
      *          description="Success",
@@ -130,9 +131,39 @@ class UsersController extends Controller
                 $myUserArray['data'] = $myUserData;
                 unset($myUserArray['password']);
                 return $myUserArray;
-            }, Users::getUsers())));
+            }, Users::getAllUsers())));
         }
         return $this->unauthorizedResponse($response, 'only director');
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/count/users",
+     *     summary="Count of users",
+     *     tags={"Counts"},
+     *     description="Number of users in database",
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *              property="users_count",
+     *              type="integer",
+     *              default=12
+     *              )
+     *          )
+     *     )
+     * )
+     *
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+
+    public function getCountAction(Request $request, Response $response): Response
+    {
+        return $this->okResponse($response, array( 'users_count' => count(Users::getAllUsers()) ) );
     }
 
 
@@ -266,7 +297,14 @@ class UsersController extends Controller
 
         $myLogin = ParameterHelper::testLogin($this, $request, $response, false);
         if ($myLogin !== null) {
-            $myUser->setLogin($myLogin);
+            $loginUser = Users::getUserByLogin($myLogin);
+            if ( $loginUser !== null && $myUser->getId() === $loginUser->getId() ){
+                $myUser->setLogin($myLogin);
+            }elseif ($loginUser === null) {
+                $myUser->setLogin($myLogin);
+            }else {
+                return $this->notAcceptableResponse($response, 'login exist');
+            }
         }
 
         $myPassword = ParameterHelper::testPassword($this, $request, $response, false) ?? microtime(true);

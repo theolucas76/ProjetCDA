@@ -263,6 +263,18 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         return $myUsers;
     }
 
+    public static function getAllUsers(): array
+    {
+        $myUsers = [];
+        $result = DB::select('SELECT * FROM users');
+        foreach ($result as $item) {
+            $user = new Users();
+            $user->fromDatabase(json_decode(json_encode($item), true));
+            $myUsers[] = $user;
+        }
+        return $myUsers;
+    }
+
     public static function getUserById(int $id): ?Users
     {
         $myUser = new Users();
