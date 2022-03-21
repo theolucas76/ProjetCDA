@@ -305,7 +305,7 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
     public static function getUsersByRole(int $role): array
     {
         $myUsers = [];
-        $myResult = DB::select("SELECT * FROM users WHERE role = $role AND deleted_at IS NULL");
+        $myResult = DB::select("SELECT * FROM users WHERE role = $role");
 
         foreach ($myResult as $item) {
             $user = new Users();
