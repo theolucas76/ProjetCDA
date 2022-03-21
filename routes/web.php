@@ -17,10 +17,13 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+//PUBLIC ROUTES
 $router->group(['prefix' => 'api/v1'], function ($router) {
+    //AUTH
     $router->post('register', 'UsersController@postAction');
     $router->post('login', 'AuthController@login');
 
+    //COUNTS
     $router->get('/count/sites', 'SiteController@getCountAction');
     $router->get('/count/currentSites', 'SiteController@getCurrentCountAction');
     $router->get('/count/previousSites', 'SiteController@getPreviousCountAction');
@@ -29,6 +32,7 @@ $router->group(['prefix' => 'api/v1'], function ($router) {
 
 });
 
+//PRIVATE ROUTES
 $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router) {
     // USERS
     $router->group( ['prefix' => '/users'], function ($router) {
@@ -46,6 +50,11 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
         $router->post('', 'SiteController@postAction');
         $router->put('/update', 'SiteController@putAction');
         $router->delete('/delete/{siteId}', 'SiteController@deleteAction');
+    } );
+
+    //MATERIALS
+    $router->group( ['prefix' => '/materials'], function ($router) {
+        $router->get('/{materialId}', 'MaterialController@getAction');
     } );
 } );
 

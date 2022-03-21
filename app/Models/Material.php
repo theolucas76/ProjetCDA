@@ -7,12 +7,43 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Schema(
+ *     schema="Material",
+ *     description="Material's Model"
+ * )
+ */
+
 class Material extends Model
 {
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $material_id;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $material_name;
+
+    /**
+     * @OA\Property
+     * @var \DateTime
+     */
     private \DateTime $created_at;
+
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $updated_at;
+
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $deleted_at;
 
     public function __construct()
@@ -25,6 +56,24 @@ class Material extends Model
         $this->setDeleted(null);
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="MaterialWithData",
+     *     description="Material Model with data",
+     *     allOf={@OA\Schema(ref="#/components/schemas/Material")},
+     *     @OA\Property(
+     *          property="data",
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/MaterialData"),
+     *          minItems=2
+     *     )
+     * )
+     */
+
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setMaterialId(int $id): Material
     {
         $this->material_id = $id;

@@ -6,11 +6,37 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Schema(
+ *     schema="MaterialData",
+ *     description="MaterialData's Model"
+ * )
+ */
+
 class MaterialData extends Model
 {
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_id;
+
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_material_id;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_key;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_column;
 
     public function __construct()
