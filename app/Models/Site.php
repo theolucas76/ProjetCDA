@@ -308,7 +308,9 @@ class Site extends Model
 
     public static function addSite(Site $site): bool
     {
-        return DB::table('hc_site')->insert($site->toArray());
+        $id = DB::table('hc_site')->insertGetId($site->toArray());
+        $site->setId($id);
+        return $id !== 0;
     }
 
 

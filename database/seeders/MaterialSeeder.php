@@ -38,7 +38,7 @@ class MaterialSeeder extends Seeder
         $myCategory = new MaterialData();
         $myCategory->setDataMaterialId(1);
         $myCategory->setDataKey('category');
-        $myCategory->setDataColumn('tools');
+        $myCategory->setDataColumn('1');
 
         return array($myNumber, $myCategory);
 

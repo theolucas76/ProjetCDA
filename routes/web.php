@@ -62,8 +62,17 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
 
     //MATERIALS
     $router->group( ['prefix' => '/materials'], function ($router) {
+        $router->get('', 'MaterialController@getsAction');
         $router->get('/{materialId}', 'MaterialController@getAction');
+        $router->get('/byCategory/{categoryId}', 'MaterialController@getsByCategory');
+
+        //MATERIALS DATA
+        $router->group(['prefix' => '/data'], function ($router) {
+            $router->post('', 'MaterialDataController@postAction');
+        });
     } );
+
+
 } );
 
 

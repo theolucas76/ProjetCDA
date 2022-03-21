@@ -91,8 +91,11 @@ class TicketData extends Model
         return $myTicketDatas;
     }
 
+
     public static function addTicketData(TicketData $data): bool {
-        return DB::table('hc_ticket_data')->insert($data->toArray());
+        $id = DB::table('hc_ticket_data')->insertGetId($data->toArray());
+        $data->setDataId($id);
+        return $id !== 0;
     }
 
     public static function updateTicketData(TicketData $data): bool {

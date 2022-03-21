@@ -172,7 +172,9 @@ class UserData extends Model
 
     public static function addUserData(UserData $data): bool
     {
-        return DB::table('hc_user_data')->insert($data->toArray());
+        $id = DB::table('hc_user_data')->insertGetId($data->toArray());
+        $data->setId($id);
+        return $id !== 0;
     }
 
     public static function updateUserData(UserData $data): bool

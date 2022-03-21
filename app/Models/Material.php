@@ -162,11 +162,23 @@ class Material extends Model
         return null;
     }
 
+    public static function getAllMaterials(): array
+    {
+        $myMaterials = [];
+        $myResult = DB::select("SELECT * FROM hc_material");
+        foreach ($myResult as $item) {
+            $material = new Material();
+            $material->fromDatabase(json_decode(json_encode($item), true));
+            $myMaterials[] = $material;
+        }
+        return $myMaterials;
+    }
+
     public static function getMaterialByCategory(string $category): array
     {
         $myMaterials = [];
         $myResult = DB::select("SELECT m.* FROM hc_material m INNER JOIN hc_material_data d ON m.material_id = d.data_material_id
-                                    WHERE m.material_id = d.data_material_id AND d.data_key = 'category' AND d.data_column = '$category'");
+                                    WHERE m.material_id = d.data_material_id AND d.data_key = 'category' AND d.data_column = $category");
         foreach ($myResult as $item) {
             $material = new Material();
             $material->fromDatabase(json_decode(json_encode($item), true));
@@ -177,7 +189,9 @@ class Material extends Model
 
     public static function addMaterial(Material $material): bool
     {
-        return DB::table('hc_material')->insert($material->toArray());
+        $id = DB::table('hc_material')->insertGetId($material->toArray());
+        $material->setMaterialId($id);
+        return $id !== 0;
     }
 
     public static function updateMaterial(Material $material): bool

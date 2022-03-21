@@ -156,7 +156,9 @@ class SiteData extends Model
     }
 
     public static function addSiteData(SiteData $data): bool {
-        return DB::table('hc_site_data')->insert($data->toArray());
+        $id = DB::table('hc_site_data')->insertGetId($data->toArray());
+        $data->setId($id);
+        return $id !== 0;
     }
 
     public static function updateSiteData(SiteData $data): bool {

@@ -56,8 +56,8 @@ class MaterialData extends Model
         return $this->data_id;
     }
 
-    public function setDataMaterialId(int $ticket_id): MaterialData {
-        $this->data_material_id = $ticket_id;
+    public function setDataMaterialId(int $material_id): MaterialData {
+        $this->data_material_id = $material_id;
         return $this;
     }
     public function getDataMaterialId(): int {
@@ -121,9 +121,40 @@ class MaterialData extends Model
         return $myMaterialDatas;
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="PostMaterialDataRequest",
+     *     required={"data_material_id", "data_key", "data_column"},
+     *     @OA\Property(
+     *          property="data_material_id",
+     *          type="integer",
+     *          default=1,
+     *          description="Material id"
+     *     ),
+     *     @OA\Property(
+     *          property="data_key",
+     *          type="string",
+     *          default="key",
+     *          description="Key of the column value"
+     *     ),
+     *     @OA\Property(
+     *          property="data_column",
+     *          type="string",
+     *          default="column",
+     *          description="Value of the key"
+     *     )
+     * )
+     *
+     *
+     * @param MaterialData $data
+     * @return bool
+     */
+
     public static function addMaterialData(MaterialData $data): bool
     {
-        return DB::table('hc_material_data')->insert($data->toArray());
+        $id = DB::table('hc_material_data')->insertGetId($data->toArray());
+        $data->setDataId($id);
+        return $id !== 0;
     }
 
     public static function updateMaterialData(MaterialData $data): bool

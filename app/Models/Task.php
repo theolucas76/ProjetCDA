@@ -173,7 +173,9 @@ class Task extends Model
 
     public static function addTask(Task $task): bool
     {
-        return DB::table('hc_task')->insert($task->toArray());
+        $id = DB::table('hc_task')->insertGetId($task->toArray());
+        $task->setTaskId($id);
+        return $id !== 0;
     }
 
     public static function updateTask(Task $task): bool

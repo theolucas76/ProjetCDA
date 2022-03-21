@@ -121,4 +121,19 @@ class ParameterHelper
     {
         return ParameterHelper::testInt($controller, $request, $response, 'site_date_end', $required);
     }
+
+    public static function testDataMaterialId(Controller $controller, Request $request, Response $response, bool $required): ?int
+    {
+        return ParameterHelper::testInt($controller, $request, $response, 'data_material_id', $required);
+    }
+
+    public static function testDataKey(Controller $controller, Request $request, Response $response, bool $required): ?string
+    {
+        return ParameterHelper::testString($controller, $request, $response, 'data_key', $required);
+    }
+
+    public static function testDataColumn(Controller $controller, Request $request, Response $response, bool $required): ?string
+    {
+        return ParameterHelper::testString($controller, $request, $response, 'data_column', $required);
+    }
 }
