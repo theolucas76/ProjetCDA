@@ -21,10 +21,18 @@ $router->group(['prefix' => 'api/v1'], function ($router) {
     $router->post('register', 'UsersController@postAction');
     $router->post('login', 'AuthController@login');
 
-    $router->get('/count/sites', 'SiteController@getCountAction');
-    $router->get('/count/currentSites', 'SiteController@getCurrentCountAction');
-    $router->get('/count/previousSites', 'SiteController@getPreviousCountAction');
-    $router->get('/count/users', 'UsersController@getCountAction');
+    $router->group(['prefix' => '/count/'], function ($router) {
+        //SITES COUNTS
+        $router->get('/sites', 'SiteController@getCountAction');
+        $router->get('/currentSites', 'SiteController@getCurrentCountAction');
+        $router->get('/previousSites', 'SiteController@getPreviousCountAction');
+        $router->get('/sitesByYear/{year}', 'SiteController@getCountByYearAction');
+        //USERS COUNTS
+        $router->get('/users', 'UsersController@getCountAction');
+        $router->get('/usersByRole/{roleId}', 'UsersController@getUsersCountByRoleAction');
+        $router->get('/usersByJob/{jobId}', 'UsersController@getUsersCountByJobAction');
+    });
+
 
 
 });
@@ -43,6 +51,7 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
         $router->get('', 'SiteController@getsAction');
         $router->get('/{siteId}', 'SiteController@getAction');
         $router->get('/user/{userId}', 'SiteController@getsActionByUser');
+        $router->get('/year/{year}', 'SiteController@getByYearAction');
         $router->post('', 'SiteController@postAction');
         $router->put('/update', 'SiteController@putAction');
         $router->delete('/delete/{siteId}', 'SiteController@deleteAction');

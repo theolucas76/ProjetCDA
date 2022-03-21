@@ -7,9 +7,11 @@ use App\Models\Site;
 use App\Models\SiteData;
 use App\Models\Utils\Functions;
 use App\Models\Utils\ParameterHelper;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Annotations as OA;
+use function Sodium\add;
 
 /**
  * @OA\RequestBody(
@@ -175,6 +177,66 @@ class SiteController extends Controller
 
     /**
      * @OA\Get(
+     *     path="/sites/year/{year}",
+     *     summary="Get sites by year",
+     *     description="Get all sites by given year",
+     *     tags={"Sites"},
+     *     security={{ "apiAuth": {} }},
+     *     @OA\Parameter(
+     *          name="year",
+     *          description="Year 'YYYY'",
+     *          required=true,
+     *          example="2022",
+     *          in="path"
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(ref="#/components/schemas/SiteWithData")
+     *     ),
+     *     @OA\Response(
+     *          response="401",
+     *          description="Unauthorized Response",
+     *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
+     *     ),
+     *     @OA\Response(
+     *          response="406",
+     *          description="Error Not Acceptable",
+     *          @OA\JsonContent(ref="#/components/schemas/NotAcceptableResponse")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Internal Server Error",
+     *          @OA\JsonContent(ref="#/components/schemas/InternalServerErrorResponse")
+     *     )
+     * )
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param string $year
+     * @return Response
+     * @throws Exception
+     */
+    public function getByYearAction(Request $request, Response $response, string $year): Response
+    {
+        $startYear = new \DateTime('01/01/' . $year);
+        $endYear = new \DateTime('01/01/' . $year);
+        $endYear->add(new \DateInterval('P1Y'));
+
+        if (is_int($startYear->getTimestamp())) {
+            return $this->okResponse($response, array('sites' => array_map(static function (Site $site) {
+                $mySiteArray = $site->toArray();
+                $mySiteArray['data'] = SiteData::getSiteDataBySite($site->getId());
+                return $mySiteArray;
+            }, Site::getSitesByYear($startYear->getTimestamp(), $endYear->getTimestamp())) ));
+        }
+        return $this->notAcceptableResponse($response, 'year');
+
+    }
+
+
+    /**
+     * @OA\Get(
      *     path="/count/sites",
      *     summary="Count of sites",
      *     tags={"Counts"},
@@ -251,6 +313,7 @@ class SiteController extends Controller
      *     )
      * )
      *
+     *
      * @param Request $request
      * @param Response $response
      * @return Response
@@ -259,6 +322,57 @@ class SiteController extends Controller
     {
         return $this->okResponse($response, array( 'previous_count' => count(Site::getPreviousSites()) ));
     }
+
+    /**
+     * @OA\Get(
+     *     path="/count/sitesByYear/{year}",
+     *     summary="Count sites in the year",
+     *     tags={"Counts"},
+     *     description="Number of sites in the given year",
+     *     @OA\Parameter(
+     *          name="year",
+     *          description="Year of the site",
+     *          required=true,
+     *          example="2022",
+     *          in="path"
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Success",
+     *          @OA\JsonContent(
+     *              @OA\Property(
+     *                  property="year_count",
+     *                  type="integer",
+     *                  default=12
+     *              )
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="406",
+     *          description="Error Not Acceptable",
+     *          @OA\JsonContent(ref="#/components/schemas/NotAcceptableResponse")
+     *     ),
+     * )
+     *
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param string $year
+     * @return Response
+     * @throws Exception
+     */
+    public function getCountByYearAction(Request $request, Response $response, string $year): Response
+    {
+        $startYear = new \DateTime('01/01/' . $year);
+        $endYear = new \DateTime('01/01/' . $year);
+        $endYear->add(new \DateInterval('P1Y'));
+
+        if (is_int($startYear->getTimestamp())) {
+            return $this->okResponse($response, array( 'year_count' => count(Site::getSitesByYear($startYear->getTimestamp(), $endYear->getTimestamp())) ));
+        }
+        return $this->notAcceptableResponse($response, 'year');
+    }
+
 
     /**
      *
