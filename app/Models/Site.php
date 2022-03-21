@@ -7,15 +7,55 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Schema (
+ *     schema="Site",
+ *     description="Site Model",
+ * )
+ */
+
 class Site extends Model
 {
-
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $site_id;
+
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $site_number_site;
+
+    /**
+     * @OA\Property
+     * @var \DateTime
+     */
     private \DateTime $site_date_start;
+
+    /**
+     * @OA\Property
+     * @var \DateTime
+     */
     private \DateTime $site_date_end;
+
+    /**
+     * @OA\Property
+     * @var \DateTime
+     */
     private \DateTime $created_at;
+
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $updated_at;
+
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $deleted_at;
 
     public function __construct()
@@ -31,6 +71,20 @@ class Site extends Model
     }
 
     /**
+     * @OA\Schema(
+     *     schema="SiteWithData",
+     *     description="Site Model with data",
+     *     allOf={@OA\Schema(ref="#/components/schemas/Site")},
+     *      @OA\Property(
+     *          property="data",
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/SiteData"),
+     *          minItems=2
+     *     )
+     * )
+     */
+
+    /**
      * @param int $id
      * @return Site
      */
@@ -40,63 +94,40 @@ class Site extends Model
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->site_id;
     }
 
-    /**
-     * @param int $number
-     * @return Site
-     */
+
     public function setNumberSite(int $number): Site
     {
         $this->site_number_site = $number;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getNumberSite(): int
     {
         return $this->site_number_site;
     }
 
-    /**
-     * @param \DateTime $date
-     * @return $this
-     */
     public function setDateStart(\DateTime $date): Site
     {
         $this->site_date_start = $date;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
     public function getDateStart(): \DateTime
     {
         return $this->site_date_start;
     }
 
-    /**
-     * @param \DateTime $date
-     * @return $this
-     */
     public function setDateEnd(\DateTime $date): Site
     {
         $this->site_date_end = $date;
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
     public function getDateEnd(): \DateTime
     {
         return $this->site_date_end;
@@ -223,6 +254,34 @@ class Site extends Model
         }
         return $mySites;
     }
+
+    /**
+     * @OA\Schema(
+     *     schema="PostSiteRequest",
+     *     required={"site_number_site", "site_date_start", "site_date_end"},
+     *     @OA\Property(
+     *          property="site_number_site",
+     *          type="integer",
+     *          default=987654,
+     *          description="Number of site"
+     *     ),
+     *     @OA\Property(
+     *          property="site_date_start",
+     *          type="integer",
+     *          default=1648601639,
+     *          description="Begin date of site"
+     *     ),
+     *     @OA\Property(
+     *          property="site_date_end",
+     *          type="integer",
+     *          default=1649465639,
+     *          description="End date of site"
+     *     )
+     * )
+     *
+     * @param Site $site
+     * @return bool
+     */
 
     public static function addSite(Site $site): bool
     {

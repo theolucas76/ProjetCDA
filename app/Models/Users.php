@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Auth\Authorizable;
 
 /**
- * @OA\Schema (
+ * @OA\Schema(
  *     schema="Users",
  *     description="Users Model"
  * )
@@ -118,6 +118,24 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->setDeleted(null);
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="UsersWithData",
+     *     description="User's Model with data",
+     *     allOf={@OA\Schema(ref="#/components/schemas/Users")},
+     *      @OA\Property(
+     *          property="data",
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/UserData"),
+     *          minItems=2
+     *     )
+     * )
+     */
+
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setId(int $id): Users
     {
         $this->id = $id;
@@ -232,11 +250,6 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
         $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
     }
 
-
-    /**
-     *
-     * @return array
-     */
 
     public static function getUsers(): array
     {

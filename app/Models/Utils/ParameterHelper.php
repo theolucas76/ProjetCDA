@@ -107,5 +107,19 @@ class ParameterHelper
 
     }
 
+    public static function testNumberSite(Controller $controller, Request $request, Response $response, bool $required): ?int
+    {
+        return ParameterHelper::testInt($controller, $request, $response, 'site_number_site', $required);
+    }
+
+    public static function testSiteDateStart(Controller $controller, Request $request, Response $response, bool $required): ?int
+    {
+        return ParameterHelper::testInt($controller, $request, $response, 'site_date_start', $required);
+    }
+
+    public static function testSiteDateEnd(Controller $controller, Request $request, Response $response, bool $required): ?int
+    {
+        return ParameterHelper::testInt($controller, $request, $response, 'site_date_end', $required);
+    }
 
 }
