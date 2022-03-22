@@ -96,6 +96,18 @@ class MaterialData extends Model
         $this->setDataColumn( $array[Keys::DATABASE_DATA_COLUMN] );
     }
 
+    public static function getAllMaterialData(): array
+    {
+        $myMaterialDatas = [];
+        $myResult = DB::select("SELECT * FROM hc_material_data");
+        foreach ($myResult as $item) {
+            $data = new MaterialData();
+            $data->fromDatabase(json_decode(json_encode($item), true));
+            $myMaterialDatas[] = $data;
+        }
+        return $myMaterialDatas;
+    }
+
     public static function getMaterialDataById(int $data_id): ?MaterialData
     {
         $myMaterialData = new MaterialData();
@@ -157,6 +169,33 @@ class MaterialData extends Model
         return $id !== 0;
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="UpdateMaterialDataRequest",
+     *     required={"data_id", "data_key", "data_column"},
+     *     @OA\Property(
+     *          property="data_id",
+     *          type="integer",
+     *          default=1,
+     *          description="MaterialData id"
+     *     ),
+     *     @OA\Property(
+     *          property="data_key",
+     *          type="string",
+     *          default="key",
+     *          description="Key of the column value"
+     *     ),
+     *     @OA\Property(
+     *          property="data_column",
+     *          type="string",
+     *          default="column",
+     *          description="Value of the key"
+     *     )
+     * )
+     *
+     * @param MaterialData $data
+     * @return bool
+     */
     public static function updateMaterialData(MaterialData $data): bool
     {
         return DB::table('hc_material_data')->where('data_id', $data->getDataId())->update($data->toArray());

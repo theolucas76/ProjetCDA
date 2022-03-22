@@ -34,9 +34,6 @@ $router->group(['prefix' => 'api/v1'], function ($router) {
         $router->get('/usersByRole/{roleId}', 'UsersController@getUsersCountByRoleAction');
         $router->get('/usersByJob/{jobId}', 'UsersController@getUsersCountByJobAction');
     });
-
-
-
 });
 
 //PRIVATE ROUTES
@@ -81,11 +78,15 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
 
         //MATERIALS DATA
         $router->group(['prefix' => '/data'], function ($router) {
+            $router->get('/all', 'MaterialDataController@getsAction');
+            $router->get('/{dataId}', 'MaterialDataController@getAction');
+            $router->get('/material/{materialId}', 'MaterialDataController@getsByMaterialAction');
             $router->post('', 'MaterialDataController@postAction');
+            $router->put('/update', 'MaterialDataController@putAction');
+            $router->delete('/delete/{dataId}', 'MaterialDataController@deleteAction');
+
         });
     } );
-
-
 } );
 
 
