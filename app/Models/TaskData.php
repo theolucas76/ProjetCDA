@@ -96,7 +96,9 @@ class TaskData extends Model
     }
     public static function addTaskData(TaskData $data): bool
     {
-        return DB::table('hc_task_data')->insert($data->toArray());
+        $id = DB::table('hc_task_data')->insertGetId($data->toArray());
+        $data->setDataId($id);
+        return $id !== 0;
     }
     public static function updateTaskData(TaskData $data): bool
     {

@@ -17,7 +17,9 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+//PUBLIC ROUTES
 $router->group(['prefix' => 'api/v1'], function ($router) {
+    //AUTH
     $router->post('register', 'UsersController@postAction');
     $router->post('login', 'AuthController@login');
 
@@ -37,6 +39,7 @@ $router->group(['prefix' => 'api/v1'], function ($router) {
 
 });
 
+//PRIVATE ROUTES
 $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router) {
     // USERS
     $router->group( ['prefix' => '/users'], function ($router) {
@@ -56,6 +59,23 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
         $router->put('/update', 'SiteController@putAction');
         $router->delete('/delete/{siteId}', 'SiteController@deleteAction');
     } );
+
+    //MATERIALS
+    $router->group( ['prefix' => '/materials'], function ($router) {
+        $router->get('', 'MaterialController@getsAction');
+        $router->get('/{materialId}', 'MaterialController@getAction');
+        $router->get('/category/{categoryId}', 'MaterialController@getsByCategory');
+        $router->post('', 'MaterialController@postAction');
+        $router->put('/update', 'MaterialController@putAction');
+        $router->delete('/delete/{materialId}', 'MaterialController@deleteAction');
+
+        //MATERIALS DATA
+        $router->group(['prefix' => '/data'], function ($router) {
+            $router->post('', 'MaterialDataController@postAction');
+        });
+    } );
+
+
 } );
 
 

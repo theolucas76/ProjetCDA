@@ -7,12 +7,43 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @OA\Schema(
+ *     schema="Material",
+ *     description="Material's Model"
+ * )
+ */
+
 class Material extends Model
 {
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $material_id;
+
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $material_name;
+
+    /**
+     * @OA\Property
+     * @var \DateTime
+     */
     private \DateTime $created_at;
+
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $updated_at;
+
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $deleted_at;
 
     public function __construct()
@@ -25,6 +56,24 @@ class Material extends Model
         $this->setDeleted(null);
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="MaterialWithData",
+     *     description="Material Model with data",
+     *     allOf={@OA\Schema(ref="#/components/schemas/Material")},
+     *     @OA\Property(
+     *          property="data",
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/MaterialData"),
+     *          minItems=2
+     *     )
+     * )
+     */
+
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setMaterialId(int $id): Material
     {
         $this->material_id = $id;
@@ -113,11 +162,10 @@ class Material extends Model
         return null;
     }
 
-    public static function getMaterialByCategory(string $category): array
+    public static function getAllMaterials(): array
     {
         $myMaterials = [];
-        $myResult = DB::select("SELECT m.* FROM hc_material m INNER JOIN hc_material_data d ON m.material_id = d.data_material_id
-                                    WHERE m.material_id = d.data_material_id AND d.data_key = 'category' AND d.data_column = '$category'");
+        $myResult = DB::select("SELECT * FROM hc_material");
         foreach ($myResult as $item) {
             $material = new Material();
             $material->fromDatabase(json_decode(json_encode($item), true));
@@ -126,11 +174,63 @@ class Material extends Model
         return $myMaterials;
     }
 
-    public static function addMaterial(Material $material): bool
+    public static function getMaterialByCategory(string $category): array
     {
-        return DB::table('hc_material')->insert($material->toArray());
+        $myMaterials = [];
+        $myResult = DB::select("SELECT m.* FROM hc_material m INNER JOIN hc_material_data d ON m.material_id = d.data_material_id
+                                    WHERE m.material_id = d.data_material_id AND d.data_key = 'category' AND d.data_column = $category");
+        foreach ($myResult as $item) {
+            $material = new Material();
+            $material->fromDatabase(json_decode(json_encode($item), true));
+            $myMaterials[] = $material;
+        }
+        return $myMaterials;
     }
 
+
+    /**
+     * @OA\Schema(
+     *     schema="PostMaterialRequest",
+     *     required={"material_name"},
+     *     @OA\Property(
+     *          property="material_name",
+     *          type="string",
+     *          default="Marteau-piqueur",
+     *          description="Name of the material"
+     *     )
+     * )
+     *
+     * @param Material $material
+     * @return bool
+     */
+    public static function addMaterial(Material $material): bool
+    {
+        $id = DB::table('hc_material')->insertGetId($material->toArray());
+        $material->setMaterialId($id);
+        return $id !== 0;
+    }
+
+    /**
+     * * @OA\Schema(
+     *     schema="UpdateMaterialRequest",
+     *     required={"material_id", "material_name"},
+     *     @OA\Property(
+     *          property="material_id",
+     *          type="integer",
+     *          default=2,
+     *          description="Material Id"
+     *     ),
+     *     @OA\Property(
+     *          property="material_name",
+     *          type="string",
+     *          default="Marteau",
+     *          description="Name of the material"
+     *     ),
+     * )
+     *
+     * @param Material $material
+     * @return bool
+     */
     public static function updateMaterial(Material $material): bool
     {
         $material->setUpdated(new \DateTime());

@@ -11,7 +11,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Annotations as OA;
-use function Sodium\add;
 
 /**
  * @OA\RequestBody(
@@ -373,7 +372,6 @@ class SiteController extends Controller
         return $this->notAcceptableResponse($response, 'year');
     }
 
-
     /**
      *
      * @OA\Post(
@@ -444,7 +442,7 @@ class SiteController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/sites",
+     *     path="/sites/update",
      *     summary="Update Site",
      *     description="Update Site with Site Model in body",
      *     security={{ "apiAuth": {} }},
