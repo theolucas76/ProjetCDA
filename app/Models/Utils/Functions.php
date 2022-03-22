@@ -6,6 +6,13 @@ use DateTime;
 
 class Functions
 {
+
+    /**
+     * Return un objet DateTime depuis un Timestamp donnée ($value)
+     * @param int $value
+     * @return DateTime|null
+     *
+     */
     public static function fromUnix( int $value ): ?\DateTime {
         $myDateTime = new DateTime();
         $myDateTime = $myDateTime->setTimestamp( $value );

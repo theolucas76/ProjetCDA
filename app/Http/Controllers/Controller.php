@@ -33,7 +33,7 @@ use OpenApi\Annotations as OA;
  * )
  */
 
-
+// AbstractController
 class Controller extends BaseController
 {
     private ?array $params;
@@ -169,6 +169,12 @@ class Controller extends BaseController
         return $response->setStatusCode(500);
     }
 
+    /**
+     * Return value of $parameter in $request
+     * @param Request $request
+     * @param string $parameter
+     * @return string|null
+     */
     public function getParam(Request $request, string $parameter): ?string
     {
         if (empty($this->params)) {
@@ -183,7 +189,6 @@ class Controller extends BaseController
 
             if ($myInput !== false && ($myJson = json_decode($myInput, true)) !== null && (is_array($myJson) || is_object($myJson))) {
                 $this->params = array_merge($this->params, $myJson);
-
             }
         }
         return $this->params[$parameter] ?? null;
