@@ -58,6 +58,16 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
         $router->post('', 'SiteController@postAction');
         $router->put('/update', 'SiteController@putAction');
         $router->delete('/delete/{siteId}', 'SiteController@deleteAction');
+
+        //SITES DATA
+        $router->group( ['prefix' => '/data' ], function ($router) {
+            $router->get('/all', 'SiteDataController@getsAction');
+            $router->get('/{dataId}', 'SiteDataController@getAction');
+            $router->get('/site/{siteId}', 'SiteDataController@getsBySiteAction');
+            $router->post('', 'SiteDataController@postAction');
+            $router->put('/update', 'SiteDataController@putAction');
+            $router->delete('/delete/{dataId}', 'SiteDataController@deleteAction');
+        } );
     } );
 
     //MATERIALS

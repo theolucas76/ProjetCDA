@@ -132,6 +132,18 @@ class SiteData extends Model
         $this->setDataColumn( $array[Keys::DATABASE_DATA_COLUMN] );
     }
 
+
+    public static function getAllSiteData(): array {
+        $mySiteDatas = [];
+        $myResult = DB::select("SELECT * FROM hc_site_data");
+        foreach ($myResult as $item) {
+            $data = new SiteData();
+            $data->fromDatabase(json_decode(json_encode($item), true));
+            $mySiteDatas[] = $data;
+        }
+        return $mySiteDatas;
+    }
+
     public static function getSiteDataById(int $id): ?SiteData {
         $mySiteData = new SiteData();
         $myResult = DB::select("SELECT * FROM hc_site_data WHERE data_id = $id");
@@ -155,12 +167,69 @@ class SiteData extends Model
         return $mySiteDatas;
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="PostSiteDataRequest",
+     *     required={"data_site_id", "data_key", "data_column"},
+     *     @OA\Property(
+     *          property="data_site_id",
+     *          type="integer",
+     *          default=1,
+     *          description="Site id"
+     *     ),
+     *     @OA\Property(
+     *          property="data_key",
+     *          type="string",
+     *          default="key",
+     *          description="Key of the column value"
+     *     ),
+     *     @OA\Property(
+     *          property="data_column",
+     *          type="string",
+     *          default="column",
+     *          description="Value of the key"
+     *     )
+     * )
+     *
+     * @param SiteData $data
+     * @return bool
+     */
+
     public static function addSiteData(SiteData $data): bool {
         $id = DB::table('hc_site_data')->insertGetId($data->toArray());
         $data->setId($id);
         return $id !== 0;
     }
 
+
+    /**
+     *  @OA\Schema(
+     *     schema="UpdateSiteDataRequest",
+     *     required={"data_id", "data_key", "data_column"},
+     *     @OA\Property(
+     *          property="data_id",
+     *          type="integer",
+     *          default=1,
+     *          description="SiteData id"
+     *     ),
+     *     @OA\Property(
+     *          property="data_key",
+     *          type="string",
+     *          default="key",
+     *          description="Key of the column value"
+     *     ),
+     *     @OA\Property(
+     *          property="data_column",
+     *          type="string",
+     *          default="column",
+     *          description="Value of the key"
+     *     )
+     * )
+     *
+     *
+     * @param SiteData $data
+     * @return bool
+     */
     public static function updateSiteData(SiteData $data): bool {
         return DB::table('hc_site_data')->where('data_id', $data->getId())->update($data->toArray());
     }

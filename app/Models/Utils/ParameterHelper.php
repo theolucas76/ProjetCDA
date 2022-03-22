@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 
 class ParameterHelper
 {
+    //
     private static function testRegex(Controller $controller, Request $request, Response $response, string $var, string $regex, bool $required): ?string
     {
         $myValue = $controller->getParam($request, $var);
@@ -140,5 +141,10 @@ class ParameterHelper
     public static function testMaterialName(Controller $controller, Request $request, Response $response, bool $required): ?string
     {
         return ParameterHelper::testString($controller, $request, $response, 'material_name', $required);
+    }
+
+    public static function testDataSiteId(Controller $controller, Request $request, Response $response, bool $required): ?int
+    {
+        return ParameterHelper::testInt($controller, $request, $response, 'data_site_id', $required);
     }
 }
