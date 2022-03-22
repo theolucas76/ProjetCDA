@@ -136,4 +136,9 @@ class ParameterHelper
     {
         return ParameterHelper::testString($controller, $request, $response, 'data_column', $required);
     }
+
+    public static function testMaterialName(Controller $controller, Request $request, Response $response, bool $required): ?string
+    {
+        return ParameterHelper::testString($controller, $request, $response, 'material_name', $required);
+    }
 }

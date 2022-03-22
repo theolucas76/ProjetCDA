@@ -187,6 +187,22 @@ class Material extends Model
         return $myMaterials;
     }
 
+
+    /**
+     * @OA\Schema(
+     *     schema="PostMaterialRequest",
+     *     required={"material_name"},
+     *     @OA\Property(
+     *          property="material_name",
+     *          type="string",
+     *          default="Marteau-piqueur",
+     *          description="Name of the material"
+     *     )
+     * )
+     *
+     * @param Material $material
+     * @return bool
+     */
     public static function addMaterial(Material $material): bool
     {
         $id = DB::table('hc_material')->insertGetId($material->toArray());
@@ -194,6 +210,27 @@ class Material extends Model
         return $id !== 0;
     }
 
+    /**
+     * * @OA\Schema(
+     *     schema="UpdateMaterialRequest",
+     *     required={"material_id", "material_name"},
+     *     @OA\Property(
+     *          property="material_id",
+     *          type="integer",
+     *          default=2,
+     *          description="Material Id"
+     *     ),
+     *     @OA\Property(
+     *          property="material_name",
+     *          type="string",
+     *          default="Marteau",
+     *          description="Name of the material"
+     *     ),
+     * )
+     *
+     * @param Material $material
+     * @return bool
+     */
     public static function updateMaterial(Material $material): bool
     {
         $material->setUpdated(new \DateTime());

@@ -64,7 +64,10 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
     $router->group( ['prefix' => '/materials'], function ($router) {
         $router->get('', 'MaterialController@getsAction');
         $router->get('/{materialId}', 'MaterialController@getAction');
-        $router->get('/byCategory/{categoryId}', 'MaterialController@getsByCategory');
+        $router->get('/category/{categoryId}', 'MaterialController@getsByCategory');
+        $router->post('', 'MaterialController@postAction');
+        $router->put('/update', 'MaterialController@putAction');
+        $router->delete('/delete/{materialId}', 'MaterialController@deleteAction');
 
         //MATERIALS DATA
         $router->group(['prefix' => '/data'], function ($router) {
