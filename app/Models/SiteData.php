@@ -225,8 +225,6 @@ class SiteData extends Model
      *          description="Value of the key"
      *     )
      * )
-     *
-     *
      * @param SiteData $data
      * @return bool
      */

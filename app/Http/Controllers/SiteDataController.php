@@ -207,9 +207,6 @@ class SiteDataController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
      *     )
      * )
-     *
-     *
-     *
      * @param Request $request
      * @param Response $response
      * @return Response

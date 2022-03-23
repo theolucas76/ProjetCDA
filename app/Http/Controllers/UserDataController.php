@@ -3,44 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enums\Role;
-use App\Models\Material;
-use App\Models\MaterialData;
+use App\Models\User;
+use App\Models\UserData;
+use App\Models\Users;
 use App\Models\Utils\ParameterHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
 /**
  * @OA\RequestBody(
- *     request="PostMaterialData",
- *     description="Post material data body",
+ *     request="PostUserData",
+ *     description="Post User data body",
  *     @OA\MediaType(
  *          mediaType="application/json",
- *          @OA\Schema(ref="#/components/schemas/PostMaterialDataRequest")
+ *          @OA\Schema(ref="#/components/schemas/PostUserDataRequest")
  *      )
  * )
  */
-
 /**
  * @OA\RequestBody(
- *     request="UpdateMaterialData",
- *     description="Update Material data body",
+ *     request="UpdateUserData",
+ *     description="Update User data body",
  *     @OA\MediaType(
  *          mediaType="application/json",
- *          @OA\Schema(ref="#/components/schemas/UpdateMaterialDataRequest")
+ *          @OA\Schema(ref="#/components/schemas/UpdateUserDataRequest")
  *      )
  * )
  */
-class MaterialDataController extends Controller
+class UserDataController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/materials/data/{dataId}",
-     *     summary="Get MaterialData By Id",
-     *     tags={"MaterialsData"},
+     *     path="/users/data/{dataId}",
+     *     summary="Get UserData By Id",
+     *     tags={"UsersData"},
      *     security={{ "apiAuth": {} }},
      *     @OA\Parameter(
      *          name="dataId",
-     *          description="MaterialData id",
+     *          description="UserData id",
      *          required=true,
      *          in="path"
      *     ),
@@ -49,7 +48,7 @@ class MaterialDataController extends Controller
      *          description="Success",
      *          @OA\MediaType(
      *              mediaType="application/json",
-     *              @OA\Schema(ref="#/components/schemas/MaterialData")
+     *              @OA\Schema(ref="#/components/schemas/UserData")
      *          )
      *     ),
      *     @OA\Response(
@@ -70,27 +69,27 @@ class MaterialDataController extends Controller
      */
     public function getAction(Request $request, Response $response, string $dataId): Response
     {
-        $myMaterialData = MaterialData::getMaterialDataById($dataId);
-        if ($myMaterialData === null) {
-            return $this->notFoundResponse($response, 'material data');
+        $myUserData = UserData::getDataById($dataId);
+        if ($myUserData === null) {
+            return $this->notFoundResponse($response, 'user data');
         }
-        return $this->okResponse($response, $myMaterialData->toArray());
+        return $this->okResponse($response, $myUserData->toArray());
     }
 
     /**
      * @OA\Get(
-     *     path="/materials/data/all",
-     *     summary="Get All MaterialData ",
-     *     tags={"MaterialsData", "Admin"},
+     *     path="/users/data/all",
+     *     summary="Get All UserData ",
+     *     tags={"UsersData", "Admin"},
      *     security={{ "apiAuth": {} }},
      *     @OA\Response(
      *          response="200",
      *          description="Success",
      *          @OA\JsonContent(
      *              @OA\Property(
-     *                  property="materialData",
+     *                  property="userData",
      *                  type="array",
-     *                  @OA\Items(ref="#/components/schemas/MaterialData"),
+     *                  @OA\Items(ref="#/components/schemas/UserData"),
      *                  minItems=2
      *              )
      *          )
@@ -101,30 +100,30 @@ class MaterialDataController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
      *     )
      * )
+     *
      * @param Request $request
      * @param Response $response
      * @return Response
      */
-
     public function getsAction(Request $request, Response $response): Response
     {
         if (AuthController::me()->getRole()->__toInt() === Role::DIRECTOR) {
-            return $this->okResponse($response, array('siteData' => array_map(static function (MaterialData $materialData): array {
-                return $materialData->toArray();
-            }, MaterialData::getAllMaterialData())));
+            return $this->okResponse($response, array('userData' => array_map(static function(UserData $data): array {
+                return $data->toArray();
+            }, UserData::getAllUserData())));
         }
         return $this->unauthorizedResponse($response, 'only director');
     }
 
     /**
      * @OA\Get(
-     *     path="/materials/data/material/{materialId}",
-     *     summary="Get MaterialData By Material",
-     *     tags={"MaterialsData"},
+     *     path="/users/data/user/{userId}",
+     *     summary="Get UserDatas By User",
+     *     tags={"UsersData"},
      *     security={{ "apiAuth": {} }},
      *     @OA\Parameter(
-     *          name="materialId",
-     *          description="Material id",
+     *          name="userId",
+     *          description="User id",
      *          required=true,
      *          in="path"
      *     ),
@@ -133,9 +132,9 @@ class MaterialDataController extends Controller
      *          description="Success",
      *          @OA\JsonContent(
      *              @OA\Property(
-     *                  property="materialData",
+     *                  property="userData",
      *                  type="array",
-     *                  @OA\Items(ref="#/components/schemas/MaterialData"),
+     *                  @OA\Items(ref="#/components/schemas/UserData"),
      *                  minItems=2
      *              )
      *          )
@@ -153,33 +152,38 @@ class MaterialDataController extends Controller
      * )
      * @param Request $request
      * @param Response $response
-     * @param string $materialId
+     * @param string $userId
      * @return Response
      */
-    public function getsByMaterialAction(Request $request, Response $response, string $materialId): Response
+    public function getsByUserAction(Request $request, Response $response, string $userId): Response
     {
-        $myMaterial = Material::getMaterialById($materialId);
-        if ($myMaterial === null) {
-            return $this->notFoundResponse($response, 'material');
+        $myUser = Users::getUserById($userId);
+        if ($myUser === null) {
+            return $this->notFoundResponse($response, 'user');
         }
-
-        return $this->okResponse($response, array('materialData' => array_map(static function (MaterialData $data): array {
+        return $this->okResponse($response, array('userData' => static function(UserData $data): array {
             return $data->toArray();
-        }, MaterialData::getMaterialDataByMaterial($materialId))));
+        }, UserData::getDataByUser($userId)));
     }
+
 
     /**
      * @OA\Post(
-     *     path="/materials/data",
-     *     summary="Post Material Data",
-     *     description="Post a material data, only director",
-     *     tags={"MaterialsData"},
+     *      path="/users/data",
+     *     summary="Post User Data",
+     *     description="Post a user data, only director",
+     *     tags={"UsersData"},
      *     security={{ "apiAuth": {} }},
-     *     @OA\RequestBody(ref="#/components/requestBodies/PostMaterialData"),
+     *     @OA\RequestBody(ref="#/components/requestBodies/PostUserData"),
      *     @OA\Response(
      *          response="200",
      *          description="Success",
-     *          @OA\JsonContent(ref="#/components/schemas/MaterialData")
+     *          @OA\JsonContent(ref="#/components/schemas/UserData")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not Found",
+     *          @OA\JsonContent(ref="#/components/schemas/NotFoundResponse")
      *     ),
      *     @OA\Response(
      *          response="406",
@@ -197,21 +201,22 @@ class MaterialDataController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
      *     )
      * )
-     *
-     *
      * @param Request $request
      * @param Response $response
      * @return Response
      */
-
     public function postAction(Request $request, Response $response): Response
     {
         if (AuthController::me()->getRole()->__toInt() === Role::DIRECTOR) {
-
-            $myDataMaterialId = ParameterHelper::testDataMaterialId($this, $request, $response, true);
-            if ($myDataMaterialId === null) {
+            $myDataUserId = ParameterHelper::testDataUserId($this, $request, $response, true);
+            if ($myDataUserId === null) {
                 return $response;
             }
+
+            if (Users::getUserById($myDataUserId) === null) {
+                return $this->notFoundResponse($response, 'user');
+            }
+
             $myDataKey = ParameterHelper::testDataKey($this, $request, $response, true);
             if ($myDataKey === null) {
                 return $response;
@@ -221,31 +226,31 @@ class MaterialDataController extends Controller
                 return $response;
             }
 
-            $myData = new MaterialData();
-            $myData->setDataMaterialId($myDataMaterialId);
-            $myData->setDataKey($myDataKey);
-            $myData->setDataColumn($myDataColumn);
+            $myUserData = new UserData();
+            $myUserData->setUserId($myDataUserId);
+            $myUserData->setDataKey($myDataKey);
+            $myUserData->setDataColumn($myDataColumn);
 
-            if (MaterialData::addMaterialData($myData)) {
-                return $this->okResponse($response, $myData->toArray());
+            if (UserData::addUserData($myUserData)) {
+                return $this->okResponse($response, $myUserData->toArray());
             }
-            return $this->internalServerErrorResponse($response, 'Can\'t add material data');
+            return $this->internalServerErrorResponse($response, 'Can\'t add user data');
         }
         return $this->unauthorizedResponse($response, 'only director');
     }
 
     /**
      * @OA\Put(
-     *     path="/materials/data/update",
-     *     summary="Update MaterialData",
-     *     description="Update MaterialData with MaterialData Model in body",
+     *     path="/users/data/update",
+     *     summary="Update UserData",
+     *     description="Update UserData with UserData Model in body",
      *     security={{ "apiAuth": {} }},
-     *     tags={"MaterialsData"},
-     *     @OA\RequestBody(ref="#/components/requestBodies/UpdateMaterialData"),
+     *     tags={"UsersData"},
+     *     @OA\RequestBody(ref="#/components/requestBodies/UpdateUserData"),
      *     @OA\Response(
      *          response="200",
      *          description="Success",
-     *          @OA\JsonContent(ref="#/components/schemas/MaterialData")
+     *          @OA\JsonContent(ref="#/components/schemas/UserData")
      *     ),
      *     @OA\Response(
      *          response="404",
@@ -268,52 +273,45 @@ class MaterialDataController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
      *     )
      * )
-     *
      * @param Request $request
      * @param Response $response
      * @return Response
      */
-
     public function putAction(Request $request, Response $response): Response
     {
         if (AuthController::me()->getRole()->__toInt() === Role::DIRECTOR) {
             $myDataId = $this->getParam($request, 'data_id');
-            $myMaterialData = MaterialData::getMaterialDataById($myDataId);
-            if ($myMaterialData === null) {
-                return $this->notFoundResponse($response, 'material data');
-            }
-            $myDataMaterialId = ParameterHelper::testDataMaterialId($this, $request, $response, false);
-            if ($myDataMaterialId !== null) {
-                $myMaterialData->setDataMaterialId($myDataMaterialId);
+            $myUserData = UserData::getDataById($myDataId);
+            if ($myUserData === null) {
+                return $this->notFoundResponse($response, 'user data');
             }
             $myDataKey = ParameterHelper::testDataKey($this, $request, $response, false);
             if ($myDataKey !== null) {
-                $myMaterialData->setDataKey($myDataKey);
+                $myUserData->setDataKey($myDataKey);
             }
             $myDataColumn = ParameterHelper::testDataColumn($this, $request, $response, false);
             if ($myDataColumn !== null) {
-                $myMaterialData->setDataColumn($myDataColumn);
+                $myUserData->setDataColumn($myDataColumn);
             }
 
-            if (MaterialData::updateMaterialData($myMaterialData)) {
-                return $this->okResponse($response, $myMaterialData->toArray());
+            if (UserData::updateUserData($myUserData)) {
+                return $this->okResponse($response, $myUserData->toArray());
             }
-
-            return $this->internalServerErrorResponse($response, 'Can\'t update material data');
+            return $this->internalServerErrorResponse($response, 'Can\'t update user data');
         }
         return $this->unauthorizedResponse($response, 'only director');
     }
 
     /**
      * @OA\Delete(
-     *     path="/materials/data/delete/{dataId}",
-     *     summary="Delete MaterialData",
-     *     tags={"MaterialsData"},
-     *     description="Delete a MaterialData",
+     *     path="/users/data/delete/{dataId}",
+     *     summary="Delete UserData",
+     *     tags={"UsersData"},
+     *     description="Delete a UserData",
      *     security={{ "apiAuth": {} }},
      *     @OA\Parameter(
      *          name="dataId",
-     *          description="MaterialData Id",
+     *          description="UserData Id",
      *          required=true,
      *          in="path"
      *     ),
@@ -345,14 +343,15 @@ class MaterialDataController extends Controller
     public function deleteAction(Request $request, Response $response, string $dataId): Response
     {
         if (AuthController::me()->getRole()->__toInt() === Role::DIRECTOR) {
-            if (MaterialData::getMaterialDataById($dataId) === null) {
-                return $this->notFoundResponse($response, 'material data');
+            if (UserData::getDataById($dataId) === null) {
+                return $this->notFoundResponse($response, 'user data');
             }
-            if (MaterialData::deleteMaterialData($dataId)) {
+            if (UserData::deleteUserData($dataId)) {
                 return $this->okResponse($response);
             }
-            return $this->internalServerErrorResponse($response, 'Can\'t remove material data');
+            return $this->internalServerErrorResponse($response, 'Can\'t update user data');
         }
         return $this->unauthorizedResponse($response, 'only director');
     }
+
 }

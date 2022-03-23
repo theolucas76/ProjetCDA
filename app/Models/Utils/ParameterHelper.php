@@ -209,4 +209,9 @@ class ParameterHelper
     {
         return ParameterHelper::testInt($controller, $request, $response, 'data_site_id', $required);
     }
+
+    public static function testDataUserId(Controller $controller, Request $request, Response $response, bool $required): ?int
+    {
+        return ParameterHelper::testInt($controller, $request, $response, 'data_user_id', $required);
+    }
 }

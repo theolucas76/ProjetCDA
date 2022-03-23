@@ -44,6 +44,16 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
         $router->get('', 'UsersController@getsAction');
         $router->put('/update', 'UsersController@putAction');
         $router->delete('/delete/{userId}', 'UsersController@deleteAction');
+
+        // USERS DATA
+        $router->group( ['prefix' => '/data'], function ($router) {
+            $router->get('/all', 'UserDataController@getsAction');
+            $router->get('/{dataId}', 'UserDataController@getAction');
+            $router->get('/user/{userId}', 'UserDataController@getsByUserAction');
+            $router->post('', 'UserDataController@postAction');
+            $router->put('/update', 'UserDataController@putAction');
+            $router->delete('/delete/{dataId}', 'UserDataController@deleteAction');
+        } );
     } );
 
     //SITES
