@@ -144,6 +144,17 @@ class UserData extends Model
         $this->setDataColumn($array[Keys::DATABASE_DATA_COLUMN]);
     }
 
+    public static function getAllUserData(): array
+    {
+        $myUserDatas = [];
+        $myResult = DB::select("SELECT * FROM hc_user_data");
+        foreach ($myResult as $item) {
+            $userData = new UserData();
+            $userData->fromDatabase(json_decode(json_encode($item), true));
+            $myUserDatas[] = $userData;
+        }
+        return $myUserDatas;
+    }
 
     public static function getDataById(int $id): ?UserData
     {
@@ -170,6 +181,33 @@ class UserData extends Model
         return $myUserDatas;
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="PostUserDataRequest",
+     *     required={"data_user_id", "data_key", "data_column"},
+     *     @OA\Property(
+     *          property="data_user_id",
+     *          type="integer",
+     *          default=1,
+     *          description="User id"
+     *     ),
+     *     @OA\Property(
+     *          property="data_key",
+     *          type="string",
+     *          default="key",
+     *          description="Key of the column value"
+     *     ),
+     *     @OA\Property(
+     *          property="data_column",
+     *          type="string",
+     *          default="column",
+     *          description="Value of the key"
+     *     )
+     * )
+     *
+     * @param UserData $data
+     * @return bool
+     */
     public static function addUserData(UserData $data): bool
     {
         $id = DB::table('hc_user_data')->insertGetId($data->toArray());
@@ -177,15 +215,40 @@ class UserData extends Model
         return $id !== 0;
     }
 
+    /**
+     * @OA\Schema(
+     *     schema="UpdateUserDataRequest",
+     *     required={"data_id", "data_key", "data_column"},
+     *     @OA\Property(
+     *          property="data_id",
+     *          type="integer",
+     *          default=1,
+     *          description="UserData id"
+     *     ),
+     *     @OA\Property(
+     *          property="data_key",
+     *          type="string",
+     *          default="key",
+     *          description="Key of the column value"
+     *     ),
+     *     @OA\Property(
+     *          property="data_column",
+     *          type="string",
+     *          default="column",
+     *          description="Value of the key"
+     *     )
+     * )
+     * @param UserData $data
+     * @return bool
+     */
     public static function updateUserData(UserData $data): bool
     {
         return DB::table('hc_user_data')->where(Keys::DATABASE_DATA_ID, $data->getId())
             ->update($data->toArray());
     }
 
-    public static function deleteUserData(UserData $data): bool
+    public static function deleteUserData(int $id): bool
     {
-        $id = $data->getId();
         return DB::delete("DELETE FROM hc_user_data WHERE data_id = $id");
     }
 
