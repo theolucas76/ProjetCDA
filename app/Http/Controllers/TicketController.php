@@ -41,8 +41,6 @@ class TicketController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/UnauthorizedResponse")
      *     )
      * )
-     *
-     *
      * @param Request $request
      * @param Response $response
      * @param string $ticketId
@@ -91,7 +89,6 @@ class TicketController extends Controller
      * @param Response $response
      * @return Response
      */
-
     public function getsAction(Request $request, Response $response): Response
     {
         if (AuthController::me()->getRole()->__toInt() === Role::DIRECTOR) {
@@ -104,5 +101,4 @@ class TicketController extends Controller
         }
         return $this->unauthorizedResponse($response, 'only director');
     }
-
 }
