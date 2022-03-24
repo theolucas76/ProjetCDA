@@ -7,12 +7,39 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+
+/**
+ *  @OA\Schema (
+ *     schema="Ticket",
+ *     description="Ticket Model",
+ * )
+ */
 class Ticket extends Model
 {
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $ticket_id;
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $ticket_subject;
+    /**
+     * @OA\Property
+     * @var \DateTime
+     */
     private \DateTime $created_at;
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $updated_at;
+    /**
+     * @OA\Property
+     * @var \DateTime|null
+     */
     private ?\DateTime $deleted_at;
 
     public function __construct()
@@ -25,6 +52,25 @@ class Ticket extends Model
         $this->setDeleted(null);
     }
 
+
+    /**
+     * @OA\Schema(
+     *     schema="TicketWithData",
+     *     description="Ticket Model with data",
+     *     allOf={@OA\Schema(ref="#/components/schemas/Ticket")},
+     *      @OA\Property(
+     *          property="data",
+     *          type="array",
+     *          @OA\Items(ref="#/components/schemas/TicketData"),
+     *          minItems=2
+     *     )
+     * )
+     */
+
+    /**
+     * @param int $id
+     * @return $this
+     */
     public function setTicketId(int $id): Ticket
     {
         $this->ticket_id = $id;
@@ -97,6 +143,18 @@ class Ticket extends Model
         $this->setCreated(Functions::fromUnix($array[Keys::DATABASE_CREATED_AT]));
         $this->setUpdated(($array[Keys::DATABASE_UPDATED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_UPDATED_AT]) : null));
         $this->setDeleted(($array[Keys::DATABASE_DELETED_AT] !== null ? Functions::fromUnix($array[Keys::DATABASE_DELETED_AT]) : null));
+    }
+
+    public static function getAllTickets(): array
+    {
+        $myTickets = [];
+        $myResult = DB::select("SELECT * FROM hc_ticket");
+        foreach ($myResult as $item) {
+            $ticket = new Ticket();
+            $ticket->fromDatabase(json_decode(json_encode($item), true));
+            $myTickets[] = $ticket;
+        }
+        return $myTickets;
     }
 
     public static function getTicketById(int $ticket_id): ?Ticket

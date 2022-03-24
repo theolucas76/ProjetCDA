@@ -83,7 +83,6 @@ class Site extends Model
      *     )
      * )
      */
-
     /**
      * @param int $id
      * @return Site
@@ -305,7 +304,6 @@ class Site extends Model
      * @param Site $site
      * @return bool
      */
-
     public static function addSite(Site $site): bool
     {
         $id = DB::table('hc_site')->insertGetId($site->toArray());

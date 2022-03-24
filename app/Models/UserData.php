@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\DB;
  * )
  *
  */
-
 class UserData extends Model
 {
     protected $fillable = [

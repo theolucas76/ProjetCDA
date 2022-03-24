@@ -37,27 +37,27 @@ $router->group(['prefix' => 'api/v1'], function ($router) {
 });
 
 //PRIVATE ROUTES
-$router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router) {
+$router->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router) {
     // USERS
-    $router->group( ['prefix' => '/users'], function ($router) {
+    $router->group(['prefix' => '/users'], function ($router) {
         $router->get('/{userId}', 'UsersController@getAction');
         $router->get('', 'UsersController@getsAction');
         $router->put('/update', 'UsersController@putAction');
         $router->delete('/delete/{userId}', 'UsersController@deleteAction');
 
         // USERS DATA
-        $router->group( ['prefix' => '/data'], function ($router) {
+        $router->group(['prefix' => '/data'], function ($router) {
             $router->get('/all', 'UserDataController@getsAction');
             $router->get('/{dataId}', 'UserDataController@getAction');
             $router->get('/user/{userId}', 'UserDataController@getsByUserAction');
             $router->post('', 'UserDataController@postAction');
             $router->put('/update', 'UserDataController@putAction');
             $router->delete('/delete/{dataId}', 'UserDataController@deleteAction');
-        } );
-    } );
+        });
+    });
 
     //SITES
-    $router->group( ['prefix' => '/sites'], function ($router) {
+    $router->group(['prefix' => '/sites'], function ($router) {
         $router->get('', 'SiteController@getsAction');
         $router->get('/{siteId}', 'SiteController@getAction');
         $router->get('/user/{userId}', 'SiteController@getsActionByUser');
@@ -67,18 +67,18 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
         $router->delete('/delete/{siteId}', 'SiteController@deleteAction');
 
         //SITES DATA
-        $router->group( ['prefix' => '/data' ], function ($router) {
+        $router->group(['prefix' => '/data'], function ($router) {
             $router->get('/all', 'SiteDataController@getsAction');
             $router->get('/{dataId}', 'SiteDataController@getAction');
             $router->get('/site/{siteId}', 'SiteDataController@getsBySiteAction');
             $router->post('', 'SiteDataController@postAction');
             $router->put('/update', 'SiteDataController@putAction');
             $router->delete('/delete/{dataId}', 'SiteDataController@deleteAction');
-        } );
-    } );
+        });
+    });
 
     //MATERIALS
-    $router->group( ['prefix' => '/materials'], function ($router) {
+    $router->group(['prefix' => '/materials'], function ($router) {
         $router->get('', 'MaterialController@getsAction');
         $router->get('/{materialId}', 'MaterialController@getAction');
         $router->get('/category/{categoryId}', 'MaterialController@getsByCategory');
@@ -94,10 +94,16 @@ $router->group( ['prefix' => 'api/v1','middleware' => 'auth'], function ($router
             $router->post('', 'MaterialDataController@postAction');
             $router->put('/update', 'MaterialDataController@putAction');
             $router->delete('/delete/{dataId}', 'MaterialDataController@deleteAction');
-
         });
-    } );
-} );
+    });
+
+    //TICKETS
+    $router->group(['prefix' => '/tickets'], function ($router) {
+        $router->get('/{ticketId}', 'TicketController@getAction');
+        $router->get('', 'TicketController@getsAction');
+    });
+
+});
 
 
 

@@ -6,11 +6,34 @@ use App\Models\Utils\Keys;
 use \Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ *  *  @OA\Schema (
+ *     schema="TicketData",
+ *     description="TicketData Model",
+ * )
+ */
+
 class TicketData extends Model
 {
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_id;
+    /**
+     * @OA\Property
+     * @var int
+     */
     private int $data_ticket_id;
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_key;
+    /**
+     * @OA\Property
+     * @var string
+     */
     private string $data_column;
 
     public function __construct()
